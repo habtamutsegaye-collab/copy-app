@@ -47,6 +47,12 @@
     .error { background-color: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
     .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #aecbfa; }
   </style>
+<link rel="manifest" href="./manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
 </head>
 <body>
 
