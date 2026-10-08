@@ -32,13 +32,11 @@
     
     .theme-toggle { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 
-    /* Dashboard Grid */
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
     .card { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
     .card h3 { margin: 0; font-size: 0.85rem; opacity: 0.8; }
     .card p { margin: 8px 0 0; font-size: 1.2rem; font-weight: bold; color: var(--primary-color); }
 
-    /* Navigation Tabs */
     .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
     .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 15px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: bold; }
     .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
@@ -46,7 +44,7 @@
     .tab-content { display: none; background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); }
     .tab-content.active { display: block; }
 
-    form { display: flex; flex-direction: column; gap: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 10px; }
     input, select, button { padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 1rem; background: var(--bg-color); color: var(--text-color); }
     button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
@@ -60,23 +58,21 @@
     <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️ Mode</button>
   </header>
 
-  <!-- Dashboard Overview -->
   <div class="dashboard-grid">
     <div class="card">
       <h3>የዛሬ ገቢ</h3>
-      <p id="todayRevenue">loading...</p>
+      <p id="todayRevenue">0 ብር</p>
     </div>
     <div class="card">
       <h3>የዛሬ ወጪ</h3>
-      <p id="todayExpense" style="color: var(--danger-color);">loading...</p>
+      <p id="todayExpense" style="color: var(--danger-color);">0 ብር</p>
     </div>
     <div class="card">
       <h3>ያልተከፈለ ዱቤ</h3>
-      <p id="totalCredit" style="color: #f59e0b;">loading...</p>
+      <p id="totalCredit" style="color: #f59e0b;">0 ብር</p>
     </div>
   </div>
 
-  <!-- Navigation Tabs -->
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
     <button class="tab-btn" onclick="switchTab('calc', event)">🖩 የኮፒ ማሰቢያ</button>
@@ -84,66 +80,62 @@
     <button class="tab-btn" onclick="switchTab('stock', event)">📦 የእቃ መቆጣጠሪያ</button>
   </div>
 
-  <!-- 1. Sales Tab -->
   <div id="sales" class="tab-content active">
     <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
-    <form id="salesForm" onsubmit="submitSales(event)">
+    <div class="form-group">
       <label>የግብይት አይነት፡</label>
       <select id="salesType">
-        <option value="service">አገልግሎት (ኮፒ/ህትመት/ላሚኔሽን...)</option>
-        <option value="item">ስቴሽነሪ እቃ (ደብተር/እስክሪብቶ...)</option>
+        <option value="service">አገልግሎት (ኮፒ/ህትመት...)</option>
+        <option value="item">ስቴሽነሪ እቃ</option>
         <option value="expense">የቢሮ ወጪ</option>
       </select>
       <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ካለ)">
-      <input type="number" id="salesAmount" placeholder="ጠቅላላ ብር" required>
+      <input type="number" id="salesAmount" placeholder="ጠቅላላ ብር (ቁጥር ብቻ)">
       <select id="paymentMethod">
         <option value="Cash">በካሽ (Cash)</option>
         <option value="Telebirr">ቴሌብር (Telebirr)</option>
         <option value="CBE">CBE Birr/Bank</option>
       </select>
-      <button type="submit" class="submit-btn">መዝግብ</button>
-    </form>
+      <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ</button>
+    </div>
     <div id="salesMsg" class="status-msg"></div>
   </div>
 
-  <!-- 2. Smart Copy Calculator Tab -->
   <div id="calc" class="tab-content">
     <h3>አውቶማቲክ የኮፒ/ህትመት ማሰቢያ</h3>
-    <form oninput="calculateCopyPrice()">
+    <div class="form-group" oninput="calculateCopyPrice()">
       <label>የገጽ ብዛት፡</label>
       <input type="number" id="pageCount" placeholder="ምሳሌ፡ 50">
       <label>የአገልግሎት አይነት፡</label>
       <select id="copyType">
-        <option value="black">ጥቁር እና ነጭ ኮፒ (Single)</option>
-        <option value="black_double">ጥቁር እና ነጭ (መንስኤ/Double)</option>
+        <option value="black">ጥቁር እና ነጭ ኮፒ</option>
+        <option value="black_double">ጥቁር እና ነጭ (መንስኤ)</option>
         <option value="color">ከለር ህትመት</option>
       </select>
       <div style="margin-top: 15px; font-size: 1.2rem; font-weight: bold;">
         የተሰላ ዋጋ፡ <span id="calculatedPrice" style="color: var(--accent-color);">0 ብር</span>
       </div>
-    </form>
+    </div>
   </div>
 
-  <!-- 3. Credit Management Tab -->
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ</h3>
-    <form id="creditForm" onsubmit="submitCredit(event)">
-      <input type="text" id="creditCustomer" placeholder="የደንበኛ ስም" required>
-      <input type="tel" id="creditPhone" placeholder="ስልክ ቁጥር">
-      <input type="number" id="creditAmount" placeholder="የዕዳ መጠን (ብር)" required>
-      <button type="submit" class="submit-btn">ዱቤ መዝግብ</button>
-    </form>
+    <div class="form-group">
+      <input type="text" id="creditCustomer" placeholder="የደንበኛ ስም">
+      <input type="tel" id="creditPhone" placeholder="ስልክ ቁጥር (ካለ)">
+      <input type="number" id="creditAmount" placeholder="የዕዳ መጠን (ብር)">
+      <button type="button" class="submit-btn" onclick="submitCredit()">ዱቤ መዝግብ</button>
+    </div>
     <div id="creditMsg" class="status-msg"></div>
   </div>
 
-  <!-- 4. Stock Management Tab -->
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
-    <form id="stockForm" onsubmit="submitStock(event)">
-      <input type="text" id="itemName" placeholder="የእቃ ስም (ምሳሌ፡ A4 ወረቀት)" required>
-      <input type="number" id="itemQty" placeholder="ያለው ብዛት" required>
-      <button type="submit" class="submit-btn">እቃ መዝግብ/አድስ</button>
-    </form>
+    <div class="form-group">
+      <input type="text" id="itemName" placeholder="የእቃ ስም">
+      <input type="number" id="itemQty" placeholder="ያለው ብዛት">
+      <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ/አድስ</button>
+    </div>
     <div id="stockMsg" class="status-msg"></div>
   </div>
 
@@ -187,67 +179,96 @@
       document.getElementById('calculatedPrice').innerText = total + " ብር (" + pricePerPage + " ብር/ገጽ)";
     }
 
-    // Fetch Dashboard Data
     function fetchDashboard() {
       fetch(SCRIPT_URL)
         .then(res => res.json())
         .then(data => {
           document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
-          document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብร";
+          document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብር";
           document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
         })
-        .catch(err => {
-          console.error(err);
-          document.getElementById('todayRevenue').innerText = "0 ብር";
-          document.getElementById('todayExpense').innerText = "0 ብር";
-          document.getElementById('totalCredit').innerText = "0 ብር";
-        });
+        .catch(err => console.error(err));
     }
 
-    // Post Data Helpers
-    function submitSales(e) {
-      e.preventDefault();
+    function submitSales() {
       const msg = document.getElementById('salesMsg');
+      const amount = document.getElementById('salesAmount').value;
+      
+      if (!amount) {
+        msg.innerText = "⚠️ እባክዎን ብር ያስገቡ!";
+        msg.style.color = "var(--danger-color)";
+        return;
+      }
+
       msg.innerText = "በመመዝገብ ላይ...";
+      msg.style.color = "var(--text-color)";
 
       const payload = {
         action: "addSales",
         type: document.getElementById('salesType').value,
-        desc: document.getElementById('salesDesc').value,
-        amount: document.getElementById('salesAmount').value,
+        desc: document.getElementById('salesDesc').value || "የለም",
+        amount: amount,
         paymentMethod: document.getElementById('paymentMethod').value
       };
 
-      sendData(payload, msg, () => document.getElementById('salesForm').reset());
+      sendData(payload, msg, () => {
+        document.getElementById('salesDesc').value = "";
+        document.getElementById('salesAmount').value = "";
+      });
     }
 
-    function submitCredit(e) {
-      e.preventDefault();
+    function submitCredit() {
       const msg = document.getElementById('creditMsg');
+      const customer = document.getElementById('creditCustomer').value;
+      const amount = document.getElementById('creditAmount').value;
+
+      if (!customer || !amount) {
+        msg.innerText = "⚠️ የስም እና የብር መጠን ያስገቡ!";
+        msg.style.color = "var(--danger-color)";
+        return;
+      }
+
       msg.innerText = "በመመዝገብ ላይ...";
+      msg.style.color = "var(--text-color)";
 
       const payload = {
         action: "addCredit",
-        customer: document.getElementById('creditCustomer').value,
-        phone: document.getElementById('creditPhone').value,
-        amount: document.getElementById('creditAmount').value
+        customer: customer,
+        phone: document.getElementById('creditPhone').value || "የለም",
+        amount: amount
       };
 
-      sendData(payload, msg, () => document.getElementById('creditForm').reset());
+      sendData(payload, msg, () => {
+        document.getElementById('creditCustomer').value = "";
+        document.getElementById('creditPhone').value = "";
+        document.getElementById('creditAmount').value = "";
+      });
     }
 
-    function submitStock(e) {
-      e.preventDefault();
+    function submitStock() {
       const msg = document.getElementById('stockMsg');
+      const name = document.getElementById('itemName').value;
+      const qty = document.getElementById('itemQty').value;
+
+      if (!name || !qty) {
+        msg.innerText = "⚠️ የእቃ ስም እና ብዛት ያስገቡ!";
+        msg.style.color = "var(--danger-color)";
+        return;
+      }
+
       msg.innerText = "በመመዝገብ ላይ...";
+      msg.style.color = "var(--text-color)";
 
       const payload = {
         action: "updateStock",
-        itemName: document.getElementById('itemName').value,
-        itemQty: document.getElementById('itemQty').value
+        itemName: name,
+        itemQty: qty
       };
 
-      sendData(payload, msg, () => document.getElementById('stockForm').reset());
+      sendData(payload, msg, () => {
+        document.getElementById('itemName').value = "";
+        document.getElementById('itemQty').value = "";
+      });
     }
 
     function sendData(payload, msgElement, resetForm) {
@@ -268,7 +289,6 @@
       });
     }
 
-    // Initial Load
     fetchDashboard();
   </script>
 </body>
