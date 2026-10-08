@@ -278,7 +278,8 @@
       })
       .then(res => res.json())
       .then(data => {
-        msgElement.innerText = "✅ " + data.message;
+        const textMsg = data.message || "መረጃው በትክክል ተመዝግቧል!";
+        msgElement.innerText = "✅ " + textMsg;
         msgElement.style.color = "var(--accent-color)";
         resetForm();
         fetchDashboard();
