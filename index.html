@@ -28,15 +28,15 @@
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
 
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    h1 { font-size: 1.4rem; margin: 0; }
+    h1 { font-size: 1.3rem; margin: 0; }
     
     .theme-toggle { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 
     /* Dashboard Grid */
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
     .card { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
-    .card h3 { margin: 0; font-size: 0.9rem; opacity: 0.8; }
-    .card p { margin: 8px 0 0; font-size: 1.3rem; font-weight: bold; color: var(--primary-color); }
+    .card h3 { margin: 0; font-size: 0.85rem; opacity: 0.8; }
+    .card p { margin: 8px 0 0; font-size: 1.2rem; font-weight: bold; color: var(--primary-color); }
 
     /* Navigation Tabs */
     .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
@@ -50,13 +50,13 @@
     input, select, button { padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 1rem; background: var(--bg-color); color: var(--text-color); }
     button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-    .alert { background: rgba(239, 68, 68, 0.2); color: var(--danger-color); padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--danger-color); }
+    .status-msg { margin-top: 10px; font-weight: bold; text-align: center; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>የኮፒ ቤት ሂሳብ መቆጣጠሪያ</h1>
+    <h1>የኮፒ ቤት መቆጣጠሪያ</h1>
     <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️ Mode</button>
   </header>
 
@@ -64,37 +64,37 @@
   <div class="dashboard-grid">
     <div class="card">
       <h3>የዛሬ ገቢ</h3>
-      <p id="todayRevenue">0 ብር</p>
+      <p id="todayRevenue">loading...</p>
     </div>
     <div class="card">
       <h3>የዛሬ ወጪ</h3>
-      <p id="todayExpense" style="color: var(--danger-color);">0 ብር</p>
+      <p id="todayExpense" style="color: var(--danger-color);">loading...</p>
     </div>
     <div class="card">
       <h3>ያልተከፈለ ዱቤ</h3>
-      <p id="totalCredit" style="color: #f59e0b;">0 ብር</p>
+      <p id="totalCredit" style="color: #f59e0b;">loading...</p>
     </div>
   </div>
 
-  <!-- Navigation -->
+  <!-- Navigation Tabs -->
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('sales')">🛒 የሽያጭ ምዝገባ</button>
-    <button class="tab-btn" onclick="switchTab('calc')">🖩 የኮፒ ማሰቢያ</button>
-    <button class="tab-btn" onclick="switchTab('credit')">📝 የዱቤ መዝገብ</button>
-    <button class="tab-btn" onclick="switchTab('stock')">📦 የእቃ መቆጣጠሪያ</button>
+    <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
+    <button class="tab-btn" onclick="switchTab('calc', event)">🖩 የኮፒ ማሰቢያ</button>
+    <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ መዝገብ</button>
+    <button class="tab-btn" onclick="switchTab('stock', event)">📦 የእቃ መቆጣጠሪያ</button>
   </div>
 
   <!-- 1. Sales Tab -->
   <div id="sales" class="tab-content active">
     <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
-    <form id="salesForm">
+    <form id="salesForm" onsubmit="submitSales(event)">
       <label>የግብይት አይነት፡</label>
-      <select id="salesType" onchange="toggleSalesInput()">
+      <select id="salesType">
         <option value="service">አገልግሎት (ኮፒ/ህትመት/ላሚኔሽን...)</option>
         <option value="item">ስቴሽነሪ እቃ (ደብተር/እስክሪብቶ...)</option>
         <option value="expense">የቢሮ ወጪ</option>
       </select>
-      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ" required>
+      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ካለ)">
       <input type="number" id="salesAmount" placeholder="ጠቅላላ ብር" required>
       <select id="paymentMethod">
         <option value="Cash">በካሽ (Cash)</option>
@@ -103,6 +103,7 @@
       </select>
       <button type="submit" class="submit-btn">መዝግብ</button>
     </form>
+    <div id="salesMsg" class="status-msg"></div>
   </div>
 
   <!-- 2. Smart Copy Calculator Tab -->
@@ -126,34 +127,33 @@
   <!-- 3. Credit Management Tab -->
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ</h3>
-    <form id="creditForm">
+    <form id="creditForm" onsubmit="submitCredit(event)">
       <input type="text" id="creditCustomer" placeholder="የደንበኛ ስም" required>
       <input type="tel" id="creditPhone" placeholder="ስልክ ቁጥር">
       <input type="number" id="creditAmount" placeholder="የዕዳ መጠን (ብር)" required>
       <button type="submit" class="submit-btn">ዱቤ መዝግብ</button>
     </form>
+    <div id="creditMsg" class="status-msg"></div>
   </div>
 
   <!-- 4. Stock Management Tab -->
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
-    <div class="alert" id="stockAlert" style="display:none;">
-      ⚠️ ትኩረት፡ አነስተኛ መጠን ያላቸው እቃዎች አሉ!
-    </div>
-    <form id="stockForm">
+    <form id="stockForm" onsubmit="submitStock(event)">
       <input type="text" id="itemName" placeholder="የእቃ ስም (ምሳሌ፡ A4 ወረቀት)" required>
       <input type="number" id="itemQty" placeholder="ያለው ብዛት" required>
       <button type="submit" class="submit-btn">እቃ መዝግብ/አድስ</button>
     </form>
+    <div id="stockMsg" class="status-msg"></div>
   </div>
 
   <script>
-    // Register Service Worker
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPGeYG-a7wbiFnU-2siaMIQs8RD5gKXkMZH5lrcpcJjCqVDXtJ_zDRY5ZlRZE0IC9-/exec";
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
     }
 
-    // Theme Toggle
     function toggleTheme() {
       const current = document.body.getAttribute('data-theme');
       if (current === 'dark') {
@@ -163,19 +163,17 @@
       }
     }
 
-    // Tab Switching
-    function switchTab(tabId) {
+    function switchTab(tabId, evt) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-      event.target.classList.add('active');
+      evt.target.classList.add('active');
     }
 
-    // Smart Copy Calculator Logic
     function calculateCopyPrice() {
       const pages = parseInt(document.getElementById('pageCount').value) || 0;
       const type = document.getElementById('copyType').value;
-      let pricePerPage = 5; // Default
+      let pricePerPage = 5;
 
       if (type === 'black') {
         pricePerPage = pages > 100 ? 3.5 : (pages > 20 ? 4 : 5);
@@ -188,6 +186,90 @@
       const total = pages * pricePerPage;
       document.getElementById('calculatedPrice').innerText = total + " ብር (" + pricePerPage + " ብር/ገጽ)";
     }
+
+    // Fetch Dashboard Data
+    function fetchDashboard() {
+      fetch(SCRIPT_URL)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
+          document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብร";
+          document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('todayRevenue').innerText = "0 ብር";
+          document.getElementById('todayExpense').innerText = "0 ብር";
+          document.getElementById('totalCredit').innerText = "0 ብር";
+        });
+    }
+
+    // Post Data Helpers
+    function submitSales(e) {
+      e.preventDefault();
+      const msg = document.getElementById('salesMsg');
+      msg.innerText = "በመመዝገብ ላይ...";
+
+      const payload = {
+        action: "addSales",
+        type: document.getElementById('salesType').value,
+        desc: document.getElementById('salesDesc').value,
+        amount: document.getElementById('salesAmount').value,
+        paymentMethod: document.getElementById('paymentMethod').value
+      };
+
+      sendData(payload, msg, () => document.getElementById('salesForm').reset());
+    }
+
+    function submitCredit(e) {
+      e.preventDefault();
+      const msg = document.getElementById('creditMsg');
+      msg.innerText = "በመመዝገብ ላይ...";
+
+      const payload = {
+        action: "addCredit",
+        customer: document.getElementById('creditCustomer').value,
+        phone: document.getElementById('creditPhone').value,
+        amount: document.getElementById('creditAmount').value
+      };
+
+      sendData(payload, msg, () => document.getElementById('creditForm').reset());
+    }
+
+    function submitStock(e) {
+      e.preventDefault();
+      const msg = document.getElementById('stockMsg');
+      msg.innerText = "በመመዝገብ ላይ...";
+
+      const payload = {
+        action: "updateStock",
+        itemName: document.getElementById('itemName').value,
+        itemQty: document.getElementById('itemQty').value
+      };
+
+      sendData(payload, msg, () => document.getElementById('stockForm').reset());
+    }
+
+    function sendData(payload, msgElement, resetForm) {
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        msgElement.innerText = "✅ " + data.message;
+        msgElement.style.color = "var(--accent-color)";
+        resetForm();
+        fetchDashboard();
+      })
+      .catch(err => {
+        msgElement.innerText = "❌ ስህተት ተፈጥሯል!";
+        msgElement.style.color = "var(--danger-color)";
+      });
+    }
+
+    // Initial Load
+    fetchDashboard();
   </script>
 </body>
 </html>
