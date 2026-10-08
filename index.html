@@ -3,262 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>የትምህርት ቤት ስቴሽነሪ እና ኮፒ ቤት መመዝገቢያ</title>
+  <title>የኮፒ ቤት እና ስቴሽነሪ መቆጣጠሪያ PWA</title>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#2563eb">
   <style>
     :root {
-      --bg-color: #eef2f5;
+      --bg-color: #f3f4f6;
       --card-bg: #ffffff;
-      --text-color: #333333;
-      --primary: #1a73e8;
-      --border-color: #ccc;
-      --calc-bg: #e8f0fe;
+      --text-color: #1f2937;
+      --primary-color: #2563eb;
+      --accent-color: #10b981;
+      --danger-color: #ef4444;
+      --border-color: #e5e7eb;
     }
 
-    body.dark-mode {
-      --bg-color: #121212;
-      --card-bg: #1e1e1e;
-      --text-color: #e0e0e0;
-      --border-color: #444;
-      --calc-bg: #2d3748;
+    [data-theme="dark"] {
+      --bg-color: #111827;
+      --card-bg: #1f2937;
+      --text-color: #f9fafb;
+      --border-color: #374151;
     }
 
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; transition: 0.3s; }
-    .container { max-width: 520px; margin: 10px auto; background: var(--card-bg); padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
-    .header-row { display: flex; justify-content: space-between; align-items: center; }
-    h2 { color: var(--primary); margin: 0; font-size: 22px; }
-    .theme-toggle { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 12px; width: auto; margin: 0; }
-    p.subtitle { text-align: center; color: #888; font-size: 13px; margin-top: 5px; margin-bottom: 15px; }
-    .section-title { font-size: 15px; font-weight: bold; color: var(--primary); border-bottom: 2px solid var(--calc-bg); padding-bottom: 5px; margin-top: 18px; margin-bottom: 10px; }
-    label { display: block; margin-top: 10px; font-weight: 600; font-size: 13px; }
-    input, textarea, select { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-    .row { display: flex; gap: 10px; }
-    .row > div { flex: 1; }
+    * { box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
+
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    h1 { font-size: 1.4rem; margin: 0; }
     
-    /* የቀጥታ ስሌት ማሳያ ሳጥን */
-    .live-calc-box { background-color: var(--calc-bg); padding: 12px; border-radius: 8px; margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; font-weight: bold; }
-    .calc-item { background: var(--card-bg); padding: 8px; border-radius: 6px; text-align: center; }
-    .calc-value { color: var(--primary); font-size: 16px; margin-top: 2px; }
+    .theme-toggle { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 
-    button.submit-btn { width: 100%; padding: 13px; background-color: var(--primary); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.3s; }
-    button.submit-btn:hover { opacity: 0.9; }
-    button.submit-btn:disabled { background-color: #a0c3ff; cursor: not-allowed; }
-    #status { margin-top: 15px; text-align: center; font-weight: bold; padding: 10px; border-radius: 6px; display: none; font-size: 14px; }
-    .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; }
-    .error { background-color: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
-    .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #aecbfa; }
+    /* Dashboard Grid */
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .card { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
+    .card h3 { margin: 0; font-size: 0.9rem; opacity: 0.8; }
+    .card p { margin: 8px 0 0; font-size: 1.3rem; font-weight: bold; color: var(--primary-color); }
+
+    /* Navigation Tabs */
+    .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+    .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 15px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: bold; }
+    .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+    .tab-content { display: none; background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); }
+    .tab-content.active { display: block; }
+
+    form { display: flex; flex-direction: column; gap: 10px; }
+    input, select, button { padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 1rem; background: var(--bg-color); color: var(--text-color); }
+    button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+    .alert { background: rgba(239, 68, 68, 0.2); color: var(--danger-color); padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--danger-color); }
   </style>
-<link rel="manifest" href="./manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js');
-  }
-</script>
 </head>
 <body>
 
-<div class="container">
-  <div class="header-row">
-    <h2>🏫 የትምህርት ቤት ስቴሽነሪ</h2>
-    <button type="button" class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+  <header>
+    <h1>የኮፒ ቤት ሂሳብ መቆጣጠሪያ</h1>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️ Mode</button>
+  </header>
+
+  <!-- Dashboard Overview -->
+  <div class="dashboard-grid">
+    <div class="card">
+      <h3>የዛሬ ገቢ</h3>
+      <p id="todayRevenue">0 ብር</p>
+    </div>
+    <div class="card">
+      <h3>የዛሬ ወጪ</h3>
+      <p id="todayExpense" style="color: var(--danger-color);">0 ብር</p>
+    </div>
+    <div class="card">
+      <h3>ያልተከፈለ ዱቤ</h3>
+      <p id="totalCredit" style="color: #f59e0b;">0 ብር</p>
+    </div>
   </div>
-  <p class="subtitle">የዕለታዊ ኮፒ እና የስቴሽነሪ ሂሳብ መመዝገቢያ</p>
-  
-  <form id="stationeryForm">
-    <label>ቀን</label>
-    <input type="date" id="date" required>
 
-    <!-- የኮፒ ቆጣሪ ክፍል -->
-    <div class="section-title">📄 የኮፒ/ፕሪንት ቆጣሪ</div>
-    <div class="row">
-      <div>
-        <label>የጠዋት ቆጣሪ</label>
-        <input type="number" id="startCounter" placeholder="1000" required>
+  <!-- Navigation -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('sales')">🛒 የሽያጭ ምዝገባ</button>
+    <button class="tab-btn" onclick="switchTab('calc')">🖩 የኮፒ ማሰቢያ</button>
+    <button class="tab-btn" onclick="switchTab('credit')">📝 የዱቤ መዝገብ</button>
+    <button class="tab-btn" onclick="switchTab('stock')">📦 የእቃ መቆጣጠሪያ</button>
+  </div>
+
+  <!-- 1. Sales Tab -->
+  <div id="sales" class="tab-content active">
+    <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
+    <form id="salesForm">
+      <label>የግብይት አይነት፡</label>
+      <select id="salesType" onchange="toggleSalesInput()">
+        <option value="service">አገልግሎት (ኮፒ/ህትመት/ላሚኔሽን...)</option>
+        <option value="item">ስቴሽነሪ እቃ (ደብተር/እስክሪብቶ...)</option>
+        <option value="expense">የቢሮ ወጪ</option>
+      </select>
+      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ" required>
+      <input type="number" id="salesAmount" placeholder="ጠቅላላ ብር" required>
+      <select id="paymentMethod">
+        <option value="Cash">በካሽ (Cash)</option>
+        <option value="Telebirr">ቴሌብር (Telebirr)</option>
+        <option value="CBE">CBE Birr/Bank</option>
+      </select>
+      <button type="submit" class="submit-btn">መዝግብ</button>
+    </form>
+  </div>
+
+  <!-- 2. Smart Copy Calculator Tab -->
+  <div id="calc" class="tab-content">
+    <h3>አውቶማቲክ የኮፒ/ህትመት ማሰቢያ</h3>
+    <form oninput="calculateCopyPrice()">
+      <label>የገጽ ብዛት፡</label>
+      <input type="number" id="pageCount" placeholder="ምሳሌ፡ 50">
+      <label>የአገልግሎት አይነት፡</label>
+      <select id="copyType">
+        <option value="black">ጥቁር እና ነጭ ኮፒ (Single)</option>
+        <option value="black_double">ጥቁር እና ነጭ (መንስኤ/Double)</option>
+        <option value="color">ከለር ህትመት</option>
+      </select>
+      <div style="margin-top: 15px; font-size: 1.2rem; font-weight: bold;">
+        የተሰላ ዋጋ፡ <span id="calculatedPrice" style="color: var(--accent-color);">0 ብር</span>
       </div>
-      <div>
-        <label>የማታ ቆጣሪ</label>
-        <input type="number" id="endCounter" placeholder="1100" required>
-      </div>
+    </form>
+  </div>
+
+  <!-- 3. Credit Management Tab -->
+  <div id="credit" class="tab-content">
+    <h3>የዱቤ መከታተያ</h3>
+    <form id="creditForm">
+      <input type="text" id="creditCustomer" placeholder="የደንበኛ ስም" required>
+      <input type="tel" id="creditPhone" placeholder="ስልክ ቁጥር">
+      <input type="number" id="creditAmount" placeholder="የዕዳ መጠን (ብር)" required>
+      <button type="submit" class="submit-btn">ዱቤ መዝግብ</button>
+    </form>
+  </div>
+
+  <!-- 4. Stock Management Tab -->
+  <div id="stock" class="tab-content">
+    <h3>የእቃ መጠን መቆጣጠሪያ</h3>
+    <div class="alert" id="stockAlert" style="display:none;">
+      ⚠️ ትኩረት፡ አነስተኛ መጠን ያላቸው እቃዎች አሉ!
     </div>
+    <form id="stockForm">
+      <input type="text" id="itemName" placeholder="የእቃ ስም (ምሳሌ፡ A4 ወረቀት)" required>
+      <input type="number" id="itemQty" placeholder="ያለው ብዛት" required>
+      <button type="submit" class="submit-btn">እቃ መዝግብ/አድስ</button>
+    </form>
+  </div>
 
-    <!-- የስቴሽነሪ እና የብድር ክፍል -->
-    <div class="section-title">📚 የስቴሽነሪ ሽያጭ እና ብድር</div>
-    <label>የስቴሽነሪ ሽያጭ ገቢ (ደብተር፣ እስክሪብቶ...)</label>
-    <input type="number" id="stationerySales" placeholder="0.00" value="0" min="0" step="any">
-
-    <div class="row">
-      <div>
-        <label>በብድር የተወሰደ (Credit)</label>
-        <input type="number" id="creditSales" placeholder="0.00" value="0" min="0" step="any">
-      </div>
-      <div>
-        <label>የተማሪው ስም እና ክፍል</label>
-        <input type="text" id="studentInfo" placeholder="ለምሳሌ፡ አቤል 8ኛ-A">
-      </div>
-    </div>
-
-    <!-- የገቢ ስብስብ ክፍል -->
-    <div class="section-title">💰 የተሰበሰበ ክፍያ (Payment Collected)</div>
-    <div class="row">
-      <div>
-        <label>በእጅ (Cash)</label>
-        <input type="number" id="cash" placeholder="0.00" value="0" min="0" step="any" required>
-      </div>
-      <div>
-        <label>Telebirr</label>
-        <input type="number" id="telebirr" placeholder="0.00" value="0" min="0" step="any" required>
-      </div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label>CBE Birr / Bank</label>
-        <input type="number" id="cbe" placeholder="0.00" value="0" min="0" step="any" required>
-      </div>
-      <div>
-        <label>የዕለት ወጪ (Expense)</label>
-        <input type="number" id="expense" placeholder="0.00" value="0" min="0" step="any">
-      </div>
-    </div>
-
-    <!-- የቀጥታ ስሌት ማሳያ -->
-    <div class="live-calc-box">
-      <div class="calc-item">
-        <div>የተሰራ ወረቀት</div>
-        <div class="calc-value" id="calcPapers">0</div>
-      </div>
-      <div class="calc-item">
-        <div>ጠቅላላ ገቢ</div>
-        <div class="calc-value" id="calcTotalSales">0 ETB</div>
-      </div>
-      <div class="calc-item">
-        <div>የወረቀት/ቶነር ወጪ (ግምት)</div>
-        <div class="calc-value" id="calcCost">0 ETB</div>
-      </div>
-      <div class="calc-item">
-        <div>የተጣራ ትርፍ (ግምት)</div>
-        <div class="calc-value" id="calcNetProfit" style="color: #137333;">0 ETB</div>
-      </div>
-    </div>
-
-    <!-- ተጨማሪ መረጃዎች -->
-    <div class="section-title">📦 ተጨማሪ መረጃ</div>
-    <div class="row">
-      <div>
-        <label>የቀረ የወረቀት ሪም</label>
-        <input type="number" id="remainingRims" placeholder="ለምሳሌ፡ 5" min="0">
-      </div>
-      <div>
-        <label>Txn ID (ካለ)</label>
-        <input type="text" id="txnId" placeholder="TXN12345">
-      </div>
-    </div>
-
-    <label>ማስታወሻ (Notes)</label>
-    <textarea id="notes" rows="2" placeholder="ተጨማሪ ማስታወሻ ካለ..."></textarea>
-
-    <button type="submit" id="submitBtn" class="submit-btn">መዝግብ (Submit Report)</button>
-  </form>
-  <div id="status"></div>
-</div>
-
-<script>
-  document.getElementById('date').value = new Date().toISOString().split('T')[0];
-
-  const scriptURL = "https://script.google.com/macros/s/AKfycbweJdJ3iR4GlhqG0C-w9y3YTRLdtsNb31YvJR91iuRf-M0VzbdlHdJPD6YzBGiSvCyP/exec";
-
-  const form = document.getElementById('stationeryForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const statusDiv = document.getElementById("status");
-
-  // የቀጥታ ስሌት አሰራር (Live Calculation Logic)
-  const inputsToWatch = ['startCounter', 'endCounter', 'cash', 'telebirr', 'cbe', 'expense'];
-  inputsToWatch.forEach(id => {
-    document.getElementById(id).addEventListener('input', calculateLive);
-  });
-
-  function calculateLive() {
-    const start = Number(document.getElementById("startCounter").value || 0);
-    const end = Number(document.getElementById("endCounter").value || 0);
-    const cash = Number(document.getElementById("cash").value || 0);
-    const telebirr = Number(document.getElementById("telebirr").value || 0);
-    const cbe = Number(document.getElementById("cbe").value || 0);
-    const expense = Number(document.getElementById("expense").value || 0);
-
-    const papers = Math.max(0, end - start);
-    const totalSales = cash + telebirr + cbe;
-    const paperAndTonerCost = papers * 4.0; // (3.5 ወረቀት + 0.5 ቶነር)
-    const netProfit = totalSales - expense - paperAndTonerCost;
-
-    document.getElementById("calcPapers").innerText = papers + " ወረቀት";
-    document.getElementById("calcTotalSales").innerText = totalSales.toLocaleString() + " ETB";
-    document.getElementById("calcCost").innerText = paperAndTonerCost.toLocaleString() + " ETB";
-    document.getElementById("calcNetProfit").innerText = netProfit.toLocaleString() + " ETB";
-  }
-
-  // Dark Mode ማብሪያ/ማጥፊያ
-  const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    themeToggle.innerText = document.body.classList.contains('dark-mode') ? "☀️ Light Mode" : "🌙 Dark Mode";
-  });
-
-  // Form Submit
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const startCounter = Number(document.getElementById("startCounter").value);
-    const endCounter = Number(document.getElementById("endCounter").value);
-
-    if (endCounter < startCounter) {
-      showStatus("የማታ ቆጣሪ ከጠዋቱ ቆጣሪ ማነስ አይችልም!", "error");
-      return;
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
     }
 
-    submitBtn.disabled = true;
-    showStatus("መረጃው እየተላከ ነው...", "info");
+    // Theme Toggle
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme');
+      if (current === 'dark') {
+        document.body.removeAttribute('data-theme');
+      } else {
+        document.body.setAttribute('data-theme', 'dark');
+      }
+    }
 
-    const data = {
-      date: document.getElementById("date").value,
-      startCounter: startCounter,
-      endCounter: endCounter,
-      stationerySales: Number(document.getElementById("stationerySales").value || 0),
-      creditSales: Number(document.getElementById("creditSales").value || 0),
-      studentInfo: document.getElementById("studentInfo").value,
-      cash: Number(document.getElementById("cash").value || 0),
-      telebirr: Number(document.getElementById("telebirr").value || 0),
-      cbe: Number(document.getElementById("cbe").value || 0),
-      expense: Number(document.getElementById("expense").value || 0),
-      remainingRims: document.getElementById("remainingRims").value,
-      txnId: document.getElementById("txnId").value,
-      notes: document.getElementById("notes").value
-    };
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
 
-    fetch(scriptURL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(data)
-    })
-    .then(() => {
-      showStatus("መረጃው በስኬት ተመዝግቧል፤ ወደ ቴሌግራም ተልኳል!", "success");
-      form.reset();
-      document.getElementById('date').value = new Date().toISOString().split('T')[0];
-      calculateLive();
-    })
-    .catch(error => {
-      showStatus("ስህተት ተፈጥሯል፡ እባክዎ እንደገና ይሞክሩ!", "error");
-    })
-    .finally(() => {
-      submitBtn.disabled = false;
-    });
-  });
+    // Smart Copy Calculator Logic
+    function calculateCopyPrice() {
+      const pages = parseInt(document.getElementById('pageCount').value) || 0;
+      const type = document.getElementById('copyType').value;
+      let pricePerPage = 5; // Default
 
-  function showStatus(message, className) {
-    statusDiv.style.display = "block";
-    statusDiv.className = className;
-    statusDiv.innerText = message;
-  }
-</script>
+      if (type === 'black') {
+        pricePerPage = pages > 100 ? 3.5 : (pages > 20 ? 4 : 5);
+      } else if (type === 'black_double') {
+        pricePerPage = pages > 100 ? 5 : 6;
+      } else if (type === 'color') {
+        pricePerPage = pages > 20 ? 15 : 20;
+      }
 
+      const total = pages * pricePerPage;
+      document.getElementById('calculatedPrice').innerText = total + " ብር (" + pricePerPage + " ብር/ገጽ)";
+    }
+  </script>
 </body>
 </html>
