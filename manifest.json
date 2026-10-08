@@ -1,15 +1,16 @@
 {
-  "name": "የኮፒ ቤት ሂሳብ",
-  "short_name": "ኮፒ ቤት",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1a73e8",
+  "short_name": "ኮፒ ሂሳብ",
+  "name": "የኮፒ ቤት እና ስቴሽነሪ መቆጣጠሪያ PWA",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3144/3144456.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": "./index.html",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "orientation": "portrait"
 }
