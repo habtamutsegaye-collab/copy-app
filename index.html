@@ -49,6 +49,10 @@
     button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
     .status-msg { margin-top: 10px; font-weight: bold; text-align: center; }
+    
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
+    .pay-btn { background: var(--primary-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+    .search-input { margin-bottom: 10px; width: 100%; }
   </style>
 </head>
 <body>
@@ -135,6 +139,10 @@
       <button type="button" class="submit-btn" onclick="submitCredit()">ዱቤ መዝግብ</button>
     </div>
     <div id="creditMsg" class="status-msg"></div>
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+    <h3>ያልተከፈሉ ዱቤዎች</h3>
+    <input type="text" class="search-input" id="searchCredit" placeholder="🔍 ደንበኛ ፈልግ..." oninput="filterCredits()">
+    <div id="creditList"></div>
   </div>
 
   <div id="stock" class="tab-content">
@@ -145,14 +153,36 @@
       <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ/አድስ</button>
     </div>
     <div id="stockMsg" class="status-msg"></div>
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+    <h3>በስቶክ ያሉ እቃዎች</h3>
+    <input type="text" class="search-input" id="searchStock" placeholder="🔍 እቃ ፈልግ..." oninput="filterStock()">
+    <div id="stockList"></div>
   </div>
 
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBJeGKWSNSHxHUh4MI4p5JXdEUfsKqdBuQxFBMs699zuG4nsSCHr7wJS2QhnjIc7KM/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwry6Bx0NXcKq32kZOrNDA9jmFTB-8tQ_4OI_GzO9rJoPmDQuydOyr_gz6IMErGOYkK/exec";
+    let globalCredits = [];
+    let globalStocks = [];
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
+    }
+
+    // የድምፅ ማረጋገጫ (Beep Sound)
+    function playSuccessSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+      } catch(e) {}
     }
 
     function toggleTheme() {
@@ -171,7 +201,6 @@
       evt.target.classList.add('active');
     }
 
-    // አዲሱ የዋጋ ማሰቢያ ስልተ-ቀመር
     function calculatePrice() {
       const qty = parseFloat(document.getElementById('calcQty').value) || 0;
       const type = document.getElementById('calcType').value;
@@ -195,8 +224,6 @@
       const calc = calculatePrice();
       document.getElementById('salesAmount').value = calc.total;
       document.getElementById('salesDesc').value = calc.qty + " ብዛት - " + document.getElementById('calcType').selectedOptions[0].text;
-      
-      // ወደ ሽያጭ Tab መቀየር
       switchTab('sales', { target: document.querySelectorAll('.tab-btn')[0] });
     }
 
@@ -208,20 +235,81 @@
           document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
           document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብር";
           document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
+          
+          globalCredits = data.creditsList || [];
+          globalStocks = data.stocksList || [];
+          renderCredits(globalCredits);
+          renderStocks(globalStocks);
         })
         .catch(err => console.error(err));
+    }
+
+    function renderCredits(list) {
+      const container = document.getElementById('creditList');
+      container.innerHTML = "";
+      if (list.length === 0) {
+        container.innerHTML = "<p>ምንም ያልተከፈለ ዱቤ የለም!</p>";
+        return;
+      }
+      list.forEach(item => {
+        container.innerHTML += `
+          <div class="list-item">
+            <div>
+              <strong>${item.customer}</strong> (${item.phone})<br>
+              <span style="color: #f59e0b; font-weight: bold;">${item.amount} ብር</span>
+            </div>
+            <button class="pay-btn" onclick="payCredit('${item.customer}', ${item.amount})">ተከፍሏል</button>
+          </div>
+        `;
+      });
+    }
+
+    function filterCredits() {
+      const q = document.getElementById('searchCredit').value.toLowerCase();
+      const filtered = globalCredits.filter(c => c.customer.toLowerCase().includes(q) || c.phone.includes(q));
+      renderCredits(filtered);
+    }
+
+    function renderStocks(list) {
+      const container = document.getElementById('stockList');
+      container.innerHTML = "";
+      if (list.length === 0) {
+        container.innerHTML = "<p>ምንም የተመዘገበ እቃ የለም!</p>";
+        return;
+      }
+      list.forEach(item => {
+        const isLow = item.itemQty <= 5;
+        container.innerHTML += `
+          <div class="list-item">
+            <div><strong>${item.itemName}</strong></div>
+            <div style="font-weight: bold; color: ${isLow ? 'var(--danger-color)' : 'var(--accent-color)'};">
+              ${item.itemQty} ብዛት ${isLow ? '⚠️ (አነስተኛ)' : ''}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filterStock() {
+      const q = document.getElementById('searchStock').value.toLowerCase();
+      const filtered = globalStocks.filter(s => s.itemName.toLowerCase().includes(q));
+      renderStocks(filtered);
+    }
+
+    function payCredit(customer, amount) {
+      if(!confirm(`${customer} ${amount} ብር ከፈለ?`)) return;
+      const msg = document.getElementById('creditMsg');
+      sendData({ action: "payCredit", customer: customer, amount: amount }, msg);
     }
 
     function submitSales() {
       const msg = document.getElementById('salesMsg');
       const amount = document.getElementById('salesAmount').value;
-      
       if (!amount) {
         msg.innerText = "⚠️ እባክዎን ብር ያስገቡ!";
         msg.style.color = "var(--danger-color)";
         return;
       }
-
       const payload = {
         action: "addSales",
         type: document.getElementById('salesType').value,
@@ -229,7 +317,6 @@
         amount: amount,
         paymentMethod: document.getElementById('paymentMethod').value
       };
-
       sendData(payload, msg, () => {
         document.getElementById('salesDesc').value = "";
         document.getElementById('salesAmount').value = "";
@@ -240,20 +327,17 @@
       const msg = document.getElementById('creditMsg');
       const customer = document.getElementById('creditCustomer').value;
       const amount = document.getElementById('creditAmount').value;
-
       if (!customer || !amount) {
         msg.innerText = "⚠️ የስም እና የብር መጠን ያስገቡ!";
         msg.style.color = "var(--danger-color)";
         return;
       }
-
       const payload = {
         action: "addCredit",
         customer: customer,
         phone: document.getElementById('creditPhone').value || "የለም",
         amount: amount
       };
-
       sendData(payload, msg, () => {
         document.getElementById('creditCustomer').value = "";
         document.getElementById('creditPhone').value = "";
@@ -265,19 +349,16 @@
       const msg = document.getElementById('stockMsg');
       const name = document.getElementById('itemName').value;
       const qty = document.getElementById('itemQty').value;
-
       if (!name || !qty) {
         msg.innerText = "⚠️ የእቃ ስም እና ብዛት ያስገቡ!";
         msg.style.color = "var(--danger-color)";
         return;
       }
-
       const payload = {
         action: "updateStock",
         itemName: name,
         itemQty: qty
       };
-
       sendData(payload, msg, () => {
         document.getElementById('itemName').value = "";
         document.getElementById('itemQty').value = "";
@@ -291,12 +372,11 @@
       fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain"
-        },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
       })
       .then(() => {
+        playSuccessSound(); // የድምፅ ማረጋገጫ
         msgElement.innerText = "✅ መረጃው በትክክል ተመዝግቧል!";
         msgElement.style.color = "var(--accent-color)";
         if (resetForm) resetForm();
