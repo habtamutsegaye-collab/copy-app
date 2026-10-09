@@ -140,7 +140,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoupjrYlvXYOCYriLxwm-IzfPnAtJXN7PssL4YhDjBwAW9ILfqPkkVUKci9-MEuQBl/exec";
+    // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5Zg0TpHy1rDToS-hbWAsh0d9ap6PyjmTCtU3Na4VFBrsKwEFCkH-QU8K21dVD3oxn/exec";
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
@@ -180,6 +181,7 @@
     }
 
     function fetchDashboard() {
+      if(!SCRIPT_URL || SCRIPT_URL.includes("እዚህ_ላይ")) return;
       fetch(SCRIPT_URL)
         .then(res => res.json())
         .then(data => {
@@ -199,9 +201,6 @@
         msg.style.color = "var(--danger-color)";
         return;
       }
-
-      msg.innerText = "በመመዝገብ ላይ...";
-      msg.style.color = "var(--text-color)";
 
       const payload = {
         action: "addSales",
@@ -228,9 +227,6 @@
         return;
       }
 
-      msg.innerText = "በመመዝገብ ላይ...";
-      msg.style.color = "var(--text-color)";
-
       const payload = {
         action: "addCredit",
         customer: customer,
@@ -256,9 +252,6 @@
         return;
       }
 
-      msg.innerText = "በመመዝገብ ላይ...";
-      msg.style.color = "var(--text-color)";
-
       const payload = {
         action: "updateStock",
         itemName: name,
@@ -272,17 +265,22 @@
     }
 
     function sendData(payload, msgElement, resetForm) {
+      msgElement.innerText = "⏳ በመመዝገብ ላይ...";
+      msgElement.style.color = "var(--text-color)";
+
       fetch(SCRIPT_URL, {
         method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain"
+        },
         body: JSON.stringify(payload)
       })
-      .then(res => res.json())
-      .then(data => {
-        const textMsg = data.message || "መረጃው በትክክል ተመዝግቧል!";
-        msgElement.innerText = "✅ " + textMsg;
+      .then(() => {
+        msgElement.innerText = "✅ መረጃው በትክክል ተመዝግቧል!";
         msgElement.style.color = "var(--accent-color)";
-        resetForm();
-        fetchDashboard();
+        if (resetForm) resetForm();
+        setTimeout(fetchDashboard, 2000);
       })
       .catch(err => {
         msgElement.innerText = "❌ ስህተት ተፈጥሯል!";
