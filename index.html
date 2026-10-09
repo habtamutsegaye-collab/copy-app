@@ -120,6 +120,7 @@
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
+    <button class="tab-btn" onclick="switchTab('machines', event)">🖨️ ማሽን/ቀለም</button>
     <button class="tab-btn" onclick="switchTab('hr', event)">⏱️ ሰራተኛ/ፈረቃ</button>
     <button class="tab-btn" onclick="switchTab('calc', event)">🖩 የዋጋ ማሰቢያ</button>
     <button class="tab-btn" onclick="switchTab('orders', event)">📋 ትዕዛዞች</button>
@@ -170,7 +171,48 @@
     <div id="salesMsg" class="status-msg"></div>
   </div>
 
-  <!-- 2. HR, Attendance & Shift Handover -->
+  <!-- 2. ማሽን፣ ቀለም እና አቅራቢዎች (Phase 6) -->
+  <div id="machines" class="tab-content">
+    <h3>🖨️ የወረቀት/ቀለም ፍጆታ እና የማሽን ጥገና</h3>
+    
+    <div class="form-group">
+      <h4>🖨️ አዲስ ቶነር/ካርትሪጅ መመዝገቢያ</h4>
+      <input type="text" id="tonerMachine" placeholder="የማሽኑ ስም/ሞዴል (ለምሳሌ Canon 2520)">
+      <input type="text" id="tonerModel" placeholder="የቶነር ቁጥር/ሞዴል">
+      <input type="number" id="tonerYield" placeholder="የሚታተመው የታቀደ ገጽ ብዛት (ለምሳሌ 10000)">
+      <button type="button" class="submit-btn" onclick="submitToner()">ቶነር ቀይሬአለሁ (መዝግብ)</button>
+    </div>
+
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+    
+    <div class="form-group">
+      <h4>🛠️ የማሽን ጥገና/ሰርቪስ መመዝገቢያ</h4>
+      <input type="text" id="maintMachine" placeholder="የማሽኑ ስም">
+      <input type="text" id="maintIssue" placeholder="የተሰራው ጥገና/የተቀየረው እቃ">
+      <input type="number" id="maintCost" placeholder="የወጣው የጥገና ወጪ (ብር)">
+      <input type="text" id="maintTech" placeholder="የቴክኒሻን/ባለሙያ ስም/ስልክ">
+      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="submitMaint()">የጥገና ወጪ መዝግብ</button>
+    </div>
+
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+
+    <div class="form-group">
+      <h4>🏭 የእቃ አቅራቢዎች (Suppliers) መዝገብ</h4>
+      <input type="text" id="suppName" placeholder="የድርጅት/አቅራቢ ስም">
+      <input type="tel" id="suppPhone" placeholder="ስልክ ቁጥር">
+      <input type="text" id="suppItem" placeholder="የሚያቀርቡት እቃ (ለምሳሌ A4 ወረቀት/እስክሪፕቶ)">
+      <input type="text" id="suppAddress" placeholder="አድራሻ/ቦታ">
+      <button type="button" class="submit-btn" style="background:var(--primary-color);" onclick="submitSupplier()">አቅራቢ መዝግብ</button>
+    </div>
+    
+    <div id="machineMsg" class="status-msg"></div>
+
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+    <h3>🏭 የተመዘገቡ አቅራቢዎች</h3>
+    <div id="suppliersList"></div>
+  </div>
+
+  <!-- 3. HR, Attendance & Shift Handover -->
   <div id="hr" class="tab-content">
     <h3>የሰራተኛ መግቢያ/መውጫ እና ፈረቃ ማስረከቢያ</h3>
     
@@ -201,7 +243,7 @@
     </div>
   </div>
 
-  <!-- 3. አውቶማቲክ የዋጋ ማሰቢያ -->
+  <!-- 4. አውቶማቲክ የዋጋ ማሰቢያ -->
   <div id="calc" class="tab-content">
     <h3>የአገልግሎቶች አውቶማቲክ ማሰቢያ</h3>
     <div class="form-group" oninput="calculatePrice()">
@@ -223,7 +265,7 @@
     </div>
   </div>
 
-  <!-- 4. ትዕዛዞች (Orders) -->
+  <!-- 5. ትዕዛዞች (Orders) -->
   <div id="orders" class="tab-content">
     <h3>የህትመት እና የጥራዝ ትዕዛዞች መከታተያ</h3>
     <div class="form-group">
@@ -238,7 +280,7 @@
     <div id="ordersList"></div>
   </div>
 
-  <!-- 5. ዱቤ -->
+  <!-- 6. ዱቤ -->
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ</h3>
     <div class="form-group">
@@ -254,7 +296,7 @@
     <div id="creditList"></div>
   </div>
 
-  <!-- 6. ስቶክ -->
+  <!-- 7. ስቶክ -->
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
     
@@ -287,7 +329,7 @@
 
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH4q5PU-5SBwO4-JLCUXSY5Oh5e01KO1KQ8IN3LwlsZrfOF6dmEa9ur5EIXIqNTA8m/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLz4f4_Ik0axdeeI49_iJ3r99lciLfo-exQdtaW6ZSt-jui1DjnEYsWGUEeMPHP3Bg/exec";
     
     // ⚠️ የቴሌብር እና የባንክ ስልክ/ሂሳብ ቁጥርዎን እዚህ ይተኩ!
     const TELEBIRR_NO = "0911000000"; 
@@ -388,6 +430,43 @@
       }
     }
 
+    function submitToner() {
+      const m = document.getElementById('tonerMachine').value;
+      const model = document.getElementById('tonerModel').value;
+      const y = document.getElementById('tonerYield').value;
+      if(!m || !model) { alert("እባክዎን ማሽን እና ቶነር ያስገቡ!"); return; }
+      sendData({ action: "addTonerLog", machineName: m, tonerModel: model, pageYield: y || 0, staff: currentUser ? currentUser.name : "Admin" }, document.getElementById('machineMsg'), () => {
+        document.getElementById('tonerMachine').value = "";
+        document.getElementById('tonerModel').value = "";
+        document.getElementById('tonerYield').value = "";
+      });
+    }
+
+    function submitMaint() {
+      const m = document.getElementById('maintMachine').value;
+      const issue = document.getElementById('maintIssue').value;
+      const cost = document.getElementById('maintCost').value;
+      if(!m || !cost) { alert("የማሽን ስም እና ወጪ ያስገቡ!"); return; }
+      sendData({ action: "addMaintenance", machineName: m, issue: issue, cost: cost, technician: document.getElementById('maintTech').value || "የለም", staff: currentUser ? currentUser.name : "Admin" }, document.getElementById('machineMsg'), () => {
+        document.getElementById('maintMachine').value = "";
+        document.getElementById('maintIssue').value = "";
+        document.getElementById('maintCost').value = "";
+        document.getElementById('maintTech').value = "";
+      });
+    }
+
+    function submitSupplier() {
+      const name = document.getElementById('suppName').value;
+      const phone = document.getElementById('suppPhone').value;
+      if(!name || !phone) { alert("የአቅራቢ ስም እና ስልክ ያስገቡ!"); return; }
+      sendData({ action: "addSupplier", supplierName: name, phone: phone, itemSupplied: document.getElementById('suppItem').value || "የለም", address: document.getElementById('suppAddress').value || "የለም", staff: currentUser ? currentUser.name : "Admin" }, document.getElementById('machineMsg'), () => {
+        document.getElementById('suppName').value = "";
+        document.getElementById('suppPhone').value = "";
+        document.getElementById('suppItem').value = "";
+        document.getElementById('suppAddress').value = "";
+      });
+    }
+
     function clockInOut(type) {
       const staff = currentUser ? currentUser.name : "ሰራተኛ";
       sendData({ action: "clockInOut", staff: staff, type: type }, document.getElementById('hrMsg'));
@@ -483,8 +562,29 @@
           renderStocks(globalStocks);
           renderOrders(globalOrders);
           renderAuditLogs(data.auditList || []);
+          renderSuppliers(data.suppliersList || []);
         })
         .catch(err => console.error(err));
+    }
+
+    function renderSuppliers(list) {
+      const container = document.getElementById('suppliersList');
+      if(!container) return;
+      container.innerHTML = "";
+      if(list.length === 0) {
+        container.innerHTML = "<p>ምንም የተመዘገበ አቅራቢ የለም!</p>";
+        return;
+      }
+      list.forEach(s => {
+        container.innerHTML += `
+          <div class="list-item">
+            <div>
+              <strong>${s.name}</strong> (${s.phone})<br>
+              <small>የሚያቀርቡት፦ ${s.item} | አድራሻ፦ ${s.address}</small>
+            </div>
+          </div>
+        `;
+      });
     }
 
     function renderAuditLogs(logs) {
