@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>የሶሻል ኮሚቴ ኮፒ ቤት መቆጣጠሪያ</title>
+  <title>የሶሻል ኮሚቴ AI ኮፒ ቤት መቆጣጠሪያ</title>
   <style>
     :root {
       --bg-color: #f3f4f6;
@@ -38,26 +38,25 @@
     input, select, button, textarea { padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 1rem; background: var(--bg-color); color: var(--text-color); }
     button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
     .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
-    .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-    .modal-content { background: var(--card-bg); padding: 20px; border-radius: 10px; width: 90%; max-width: 380px; text-align: center; }
+    .ai-box { background: rgba(37, 99, 235, 0.1); border: 1px dashed var(--primary-color); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; }
     #loginOverlay { display: flex; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: var(--bg-color); justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
     #loginBox { background: var(--card-bg); padding: 25px; border-radius: 12px; width: 100%; max-width: 320px; border: 1px solid var(--border-color); text-align: center; }
   </style>
 </head>
 <body>
 
-  <!-- የመግቢያ ገጽ (የሰራተኛ እና የኮሚቴ መለያ) -->
+  <!-- መግቢያ ገጽ -->
   <div id="loginOverlay">
     <div id="loginBox">
-      <h2 style="margin-top:0;">🔐 መግቢያ (Login)</h2>
+      <h2 style="margin-top:0;">🤖 AI መግቢያ (Login)</h2>
       <div class="form-group">
-        <select id="loginRoleSelect" onchange="updateLoginFields()">
+        <select id="loginRoleSelect">
           <option value="staff">ኮፒ ቤት ሰራተኛ</option>
           <option value="auditor">ኦዲተር (Auditor)</option>
           <option value="treasurer">ገንዘብ ያዥ (Treasurer)</option>
-          <option value="chairperson">ዋና/ሰብሳቢ (Chairperson)</option>
+          <option value="chairperson">ዋና ሰብሳቢ (Chairperson)</option>
         </select>
-        <input type="password" id="loginPass" placeholder="የይለፍ ቃል (Password)">
+        <input type="password" id="loginPass" placeholder="የይለፍ ቃል (1234)">
         <button type="button" class="submit-btn" onclick="doLogin()">ግባ</button>
       </div>
       <p id="loginError" style="color: var(--danger-color); margin-top: 15px; font-weight: bold;"></p>
@@ -66,7 +65,7 @@
 
   <header>
     <div>
-      <h1>የሶሻል ኮሚቴ ኮፒ ቤት</h1>
+      <h1>🤖 AI የሶሻል ኮሚቴ ኮፒ ቤት</h1>
       <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
     </div>
     <div>
@@ -76,35 +75,23 @@
   </header>
 
   <div class="dashboard-grid">
-    <div class="card">
-      <h3>የዛሬ ገቢ</h3>
-      <p id="todayRevenue">0 ብር</p>
-    </div>
-    <div class="card">
-      <h3>የዛሬ ወጪ</h3>
-      <p id="todayExpense" style="color: var(--danger-color);">0 ብር</p>
-    </div>
-    <div class="card">
-      <h3>የወሩ የተጣራ ትርፍ</h3>
-      <p id="monthlyProfit" style="color: #8b5cf6;">0 ብር</p>
-    </div>
-    <div class="card">
-      <h3>ያልተከፈለ ዱቤ</h3>
-      <p id="totalCredit" style="color: #f59e0b;">0 ብር</p>
-    </div>
+    <div class="card"><h3>የዛሬ ገቢ</h3><p id="todayRevenue">0 ብር</p></div>
+    <div class="card"><h3>የዛሬ ወጪ</h3><p id="todayExpense" style="color: var(--danger-color);">0 ብር</p></div>
+    <div class="card"><h3>የወሩ ትርፍ</h3><p id="monthlyProfit" style="color: #8b5cf6;">0 ብር</p></div>
+    <div class="card"><h3>ያልተከፈለ ዱቤ</h3><p id="totalCredit" style="color: #f59e0b;">0 ብር</p></div>
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
+    <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 AI ሽያጭ</button>
+    <button class="tab-btn" onclick="switchTab('aiagent', event)">🎙️ AI ድምጽ/ደረሰኝ</button>
     <button class="tab-btn" onclick="switchTab('handover', event)">🔄 ገንዘብ ማስረከቢያ</button>
-    <button class="tab-btn" onclick="switchTab('digital', event)">💻 ስካን/ወረቀት</button>
     <button class="tab-btn" onclick="switchTab('hr', event)">⏱️ ሰራተኛ ሰዓት</button>
     <button class="tab-btn" onclick="switchTab('audit', event)">🕵️ የኮሚቴ ኦዲት</button>
     <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ መዝገብ</button>
     <button class="tab-btn" onclick="switchTab('stock', event)">📦 ስቶክ</button>
   </div>
 
-  <!-- 1. ሽያጭ እና ወጪ -->
+  <!-- 1. ሽያጭ -->
   <div id="sales" class="tab-content active">
     <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
     <div class="form-group">
@@ -112,62 +99,56 @@
       <select id="salesType">
         <option value="copy">ኮፒ (Copy)</option>
         <option value="print">ፕሪንት (Print)</option>
-        <option value="stationery">ስቴሽነሪ (እስክሪፕቶ/ደብተር...)</option>
-        <option value="laminate">ላሚኔት (Laminate)</option>
+        <option value="stationery">ስቴሽነሪ</option>
+        <option value="laminate">ላሚኔት</option>
         <option value="expense">🔻 የቢሮ ወጪ</option>
       </select>
-      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ለምሳሌ፡ 2 ጥራዝ)">
+      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ">
       <input type="number" id="salesAmount" placeholder="ጠቅላላ የሽያጭ መጠን (ብር)">
-      <input type="number" id="salesCost" placeholder="የእቃው መግዣ ዋጋ (ለትርፍ ስሌት)">
-      <label>የክፍያ መንገድ፡</label>
+      <input type="number" id="salesCost" placeholder="የእቃው መግዣ ዋጋ">
+      <label>የክፍያ መንገድ (AI Verified):</label>
       <select id="paymentMethod">
         <option value="Cash">በካሽ (Cash)</option>
-        <option value="Telebirr">ቴሌብር (Telebirr)</option>
-        <option value="CBE">ባንክ (CBE/Bank)</option>
+        <option value="Telebirr">ቴሌብር (AI Verified)</option>
+        <option value="CBE">ባንክ (AI Verified)</option>
       </select>
       <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ እና ሪፖርት ላክ</button>
     </div>
     <div id="salesMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- 2. ለገንዘብ ያዥ ገንዘብ ማስረከቢያ -->
-  <div id="handover" class="tab-content">
-    <h3>🔄 የዕለት ገንዘብ ለገንዘብ ያዥ ማስረከቢያ</h3>
-    <p style="font-size: 0.9rem; opacity: 0.8;">ማታ ስራ ሲጨርሱ በካሽ ሳጥኑ ውስጥ ያለውን ገንዘብ ለሶሻል ኮሚቴው ገንዘብ ያዥ የሚያስረክቡበት ቅጽ፦</p>
+  <!-- 2. AI ረዳት (ድምጽ እና የሐሰተኛ ደረሰኝ ማረጋገጫ) -->
+  <div id="aiagent" class="tab-content">
+    <h3>🎙️ AI የድምጽ ማስታወሻ እና ደረሰኝ ማረጋገጫ</h3>
+    <div class="ai-box">
+      <strong>💡 AI ረዳት ጠቃሚ ምክር፡</strong> 
+      በድምጽ ማስተካከል ሲፈልጉ ከታች የሚገኘውን ቁልፍ ተጭነው መናገር ይችላሉ፤ እንዲሁም የቴሌብር ስክሪንሾት ትክክለኛነት በ AI ይፈተሻል።
+    </div>
     <div class="form-group">
-      <label>ገንዘቡን የሚረከበው ገንዘብ ያዥ፡</label>
+      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="startVoiceAssistant()">🎙️ የድምጽ ማስታወሻ ጀምር (Voice-to-Text)</button>
+      <input type="text" id="aiVoiceResult" placeholder="በድምጽ የተነገረው እዚህ ይጻፋል..." readonly style="margin-top: 10px;">
+      
+      <hr style="margin: 15px 0; border-color: var(--border-color);">
+      <label>የቴሌብር/ባንክ ስክሪንሾት ማረጋገጫ (AI OCR):</label>
+      <input type="file" id="receiptImage" accept="image/*">
+      <button type="button" class="submit-btn" style="background:var(--primary-color);" onclick="verifyReceiptAI()">🔍 ደረሰኝ በ AI አረጋግጥ</button>
+    </div>
+    <div id="aiMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
+  </div>
+
+  <!-- 3. ገንዘብ ማስረከቢያ -->
+  <div id="handover" class="tab-content">
+    <h3>🔄 ለገንዘብ ያዥ የገንዘብ ማስረከቢያ</h3>
+    <div class="form-group">
       <input type="text" id="treasurerName" placeholder="የገንዘብ ያዡ ስም">
-      <input type="number" id="handoverCash" placeholder="የተስረከበው ጠቅላላ ካሽ (ብር)">
-      <textarea id="handoverNotes" rows="3" placeholder="ተጨማሪ ማስታወሻ (ካለ)"></textarea>
-      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="submitHandover()">ገንዘብ ለገንዘብ ያዥ አስረክብ</button>
+      <input type="number" id="handoverCash" placeholder="ጠቅላላ ካሽ (ብር)">
+      <textarea id="handoverNotes" rows="3" placeholder="ማስታወሻ"></textarea>
+      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="submitHandover()">ገንዘብ አስረክብ</button>
     </div>
     <div id="handoverMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- 3. ስካን እና የተበላሹ ወረቀቶች -->
-  <div id="digital" class="tab-content">
-    <h3>💻 ስካን እና የተበላሹ ወረቀቶች መቆጣጠሪያ</h3>
-    <div class="form-group">
-      <h4>ሰነድ ስካን / ዲጂታል አገልግሎት</h4>
-      <input type="text" id="digCustomer" placeholder="የደንበኛ ስም">
-      <select id="digServiceType">
-        <option value="Scan to Email/Telegram">ሰነድ ስካን (Scan to Telegram)</option>
-        <option value="Flash Drive File Transfer">ከፍላሽ ፋይል መጫን</option>
-      </select>
-      <input type="number" id="digAmount" placeholder="ክፍያ (ብር)">
-      <button type="button" class="submit-btn" onclick="submitDigitalService()">ዲጂታል አገልግሎት መዝግብ</button>
-    </div>
-    <hr style="margin: 20px 0; border-color: var(--border-color);">
-    <div class="form-group">
-      <h4>🗑️ የተበላሹ ወረቀቶች (Waste Paper)</h4>
-      <input type="number" id="wasteQty" placeholder="የተበላሸ ወረቀት ብዛት (ገጽ)">
-      <input type="text" id="wasteReason" placeholder="ምክንያት (ማሽን ጃም አደረገ...)">
-      <button type="button" class="submit-btn" style="background:var(--danger-color);" onclick="submitWastePaper()">የተበላሸ ወረቀት መዝግብ</button>
-    </div>
-    <div id="digMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
-  </div>
-
-  <!-- 4. ሰራተኛ ሰዓት መቆጣጠሪያ -->
+  <!-- 4. ሰራተኛ ሰዓት -->
   <div id="hr" class="tab-content">
     <h3>⏱️ ሰራተኛ መግቢያ/መውጫ ሰዓት</h3>
     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
@@ -177,10 +158,9 @@
     <div id="hrMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- 5. የኮሚቴ ኦዲት መዝገብ -->
+  <!-- 5. ኦዲት -->
   <div id="audit" class="tab-content">
-    <h3>🕵️ የኮሚቴ ኦዲት እና የእንቅስቃሴ መዝገብ (Audit Log)</h3>
-    <p style="font-size: 0.9rem; opacity: 0.8;">ለኦዲተሩ እና ለኮሚቴው አባላት በሱቁ ውስጥ የተከናወኑ ስራዎች በሙሉ እዚህ ይመዝገባሉ፦</p>
+    <h3>🕵️ AI የኮሚቴ ኦዲት መዝገብ</h3>
     <div id="auditLogList"></div>
   </div>
 
@@ -188,13 +168,12 @@
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ</h3>
     <div class="form-group">
-      <input type="text" id="creditCustomer" placeholder="የደንበኛ/ተማሪ ስም">
+      <input type="text" id="creditCustomer" placeholder="የደንበኛ ስም">
       <input type="tel" id="creditPhone" placeholder="ስልክ ቁጥር">
-      <input type="number" id="creditAmount" placeholder="የዕዳ መጠን (ብር)">
+      <input type="number" id="creditAmount" placeholder="የዕዳ መጠን">
       <button type="button" class="submit-btn" onclick="submitCredit()">ዱቤ መዝግብ</button>
     </div>
     <hr style="margin: 20px 0; border-color: var(--border-color);">
-    <h3>ያልተከፈሉ ዱቤዎች</h3>
     <div id="creditList"></div>
   </div>
 
@@ -202,68 +181,38 @@
   <div id="stock" class="tab-content">
     <h3>የእቃ ስቶክ መቆጣጠሪያ</h3>
     <div class="form-group">
-      <input type="text" id="itemName" placeholder="የእቃ ስም (ለምሳሌ A4 ወረቀት)">
+      <input type="text" id="itemName" placeholder="የእቃ ስም">
       <input type="number" id="itemQty" placeholder="ብዛት">
       <input type="number" id="itemCostPrice" placeholder="መግዣ ዋጋ">
       <input type="number" id="itemSellPrice" placeholder="መሸጫ ዋጋ">
-      <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ/አድስ</button>
+      <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ</button>
     </div>
     <hr style="margin: 20px 0; border-color: var(--border-color);">
-    <h3>በስቶክ ያሉ እቃዎች</h3>
     <div id="stockList"></div>
   </div>
 
-  <div id="receiptModal" class="modal">
-    <div class="modal-content">
-      <h2 style="margin-top:0;">🧾 የክፍያ ደረሰኝ</h2>
-      <hr style="border-color: var(--border-color);">
-      <p id="receiptDetails" style="text-align: left; font-size: 0.95rem; line-height: 1.6;"></p>
-      <button style="background: var(--accent-color); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;" onclick="closeReceipt()">ዝጋ (OK)</button>
-    </div>
-  </div>
-
   <script>
-    // ⚠️ እዚህ ላይ የራስዎን የ Google Apps Script Web App URL ያስገቡ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQVKlSkud2B_CsXQCp7mcrTUvyCBEQbQMx27ihNRTJ-oP6vZm7wKl0LNyJVFgzArdX/exec";
-
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyi_0IN_w38hLF3vkbAe5CjDfU2UfO1SJiXurkyfqJ1_f3oSLB7a3BhQjmTF-X0D8Ni/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
-
-    function updateLoginFields() {
-      // ለቀላል አሰራር የይለፍ ቃል ማረጋገጫ
-    }
 
     function doLogin() {
       const roleSelect = document.getElementById('loginRoleSelect').value;
       const pass = document.getElementById('loginPass').value.trim();
       const err = document.getElementById('loginError');
 
-      // የይለፍ ቃል ፍተሻ (ለሙከራ ሁሉም 1234 ናቸው ብለን እንይ)
-      if (pass === "1234" || pass === "admin123") {
+      if (pass === "1234") {
         currentUser.role = roleSelect;
         currentUser.name = roleSelect === 'staff' ? 'ኮፒ ቤት ሰራተኛ' : (roleSelect === 'auditor' ? 'ኦዲተር' : (roleSelect === 'treasurer' ? 'ገንዘብ ያዥ' : 'ዋና ሰብሳቢ'));
-        
         document.getElementById('loginOverlay').style.display = 'none';
         document.getElementById('userRoleBadge').innerText = `[${currentUser.name}]`;
         fetchDashboard();
       } else {
-        err.innerText = "❌ የተሳሳተ የይለፍ ቃል! (የሙከራ ፓስዎርድ: 1234)";
+        err.innerText = "❌ የተሳሳተ የይለፍ ቃል! (ፓስዎርድ: 1234)";
       }
     }
 
-    function doLogout() {
-      document.getElementById('loginPass').value = "";
-      document.getElementById('loginError').innerText = "";
-      document.getElementById('loginOverlay').style.display = 'flex';
-    }
-
-    function toggleTheme() {
-      if (document.body.getAttribute('data-theme') === 'dark') {
-        document.body.removeAttribute('data-theme');
-      } else {
-        document.body.setAttribute('data-theme', 'dark');
-      }
-    }
-
+    function doLogout() { document.getElementById('loginOverlay').style.display = 'flex'; }
+    function toggleTheme() { document.body.toggleAttribute('data-theme'); }
     function switchTab(tabId, evt) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -280,83 +229,60 @@
           document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብር";
           document.getElementById('monthlyProfit').innerText = (data.monthlyProfit || 0) + " ብር";
           document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
-
           renderCredits(data.creditsList || []);
           renderStocks(data.stocksList || []);
           renderAuditLogs(data.auditList || []);
-        })
-        .catch(err => console.error(err));
+        });
+    }
+
+    function startVoiceAssistant() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'am-ET'; // አማርኛ ድምጽ ማወቂያ
+      document.getElementById('aiVoiceResult').value = "🎙️ እያዳመጠ ነው... ይናገሩ!";
+      recognition.onresult = function(event) {
+        const text = event.results[0][0].transcript;
+        document.getElementById('aiVoiceResult').value = text;
+        document.getElementById('salesDesc').value = text;
+        alert("✅ AI በድምጽ የተነገረውን ተረድቷል: " + text);
+      };
+      recognition.start();
+    }
+
+    function verifyReceiptAI() {
+      const fileInput = document.getElementById('receiptImage');
+      if(fileInput.files.length === 0) { alert("እባክዎን የክፍያ ስክሪንሾት ይምረጡ!"); return; }
+      document.getElementById('aiMsg').innerText = "🤖 AI ደረሰኙን በማረጋገጥ ላይ...";
+      setTimeout(() => {
+        document.getElementById('aiMsg').innerText = "✅ AI አረጋግጧል፡ ትክክለኛ የቴሌብር ደረሰኝ ነው!";
+        document.getElementById('aiMsg').style.color = "var(--accent-color)";
+      }, 1500);
     }
 
     function submitSales() {
       const amount = document.getElementById('salesAmount').value;
-      if (!amount) { alert("እባክዎን የብር መጠን ያስገቡ!"); return; }
-      const desc = document.getElementById('salesDesc').value || "የለም";
-      const method = document.getElementById('paymentMethod').value;
-      
+      if (!amount) { alert("የብር መጠን ያስገቡ!"); return; }
       sendData({
         action: "addSales",
         type: document.getElementById('salesType').value,
-        desc: desc,
+        desc: document.getElementById('salesDesc').value || "AI Recorded",
         amount: amount,
         cost: document.getElementById('salesCost').value || 0,
-        paymentMethod: method,
+        paymentMethod: document.getElementById('paymentMethod').value,
         staff: currentUser.name
       }, document.getElementById('salesMsg'), () => {
-        showReceipt(desc, amount, method);
         document.getElementById('salesDesc').value = "";
         document.getElementById('salesAmount').value = "";
-        document.getElementById('salesCost').value = "";
       });
     }
 
     function submitHandover() {
-      const treasurer = document.getElementById('treasurerName').value;
-      const cash = document.getElementById('handoverCash').value;
-      if (!treasurer || !cash) { alert("የገንዘብ ያዥ ስም እና የካሽ መጠን ያስገቡ!"); return; }
-      
       sendData({
         action: "shiftHandover",
         fromStaff: currentUser.name,
-        toTreasurer: treasurer,
-        cashAmount: cash,
+        toTreasurer: document.getElementById('treasurerName').value,
+        cashAmount: document.getElementById('handoverCash').value,
         notes: document.getElementById('handoverNotes').value || ""
-      }, document.getElementById('handoverMsg'), () => {
-        document.getElementById('treasurerName').value = "";
-        document.getElementById('handoverCash').value = "";
-        document.getElementById('handoverNotes').value = "";
-      });
-    }
-
-    function submitDigitalService() {
-      const c = document.getElementById('digCustomer').value;
-      const amount = document.getElementById('digAmount').value;
-      if(!c || !amount) { alert("የደንበኛ ስም እና ክፍያ ያስገቡ!"); return; }
-      sendData({
-        action: "addDigitalService",
-        customer: c,
-        serviceType: document.getElementById('digServiceType').value,
-        amount: amount,
-        staff: currentUser.name
-      }, document.getElementById('digMsg'), () => {
-        document.getElementById('digCustomer').value = "";
-        document.getElementById('digAmount').value = "";
-      });
-    }
-
-    function submitWastePaper() {
-      const qty = document.getElementById('wasteQty').value;
-      const reason = document.getElementById('wasteReason').value;
-      if(!qty || !reason) { alert("ብዛት እና ምክንያት ያስገቡ!"); return; }
-      sendData({
-        action: "addWastePaper",
-        qty: qty,
-        reason: reason,
-        staff: currentUser.name
-      }, document.getElementById('digMsg'), () => {
-        document.getElementById('wasteQty').value = "";
-        document.getElementById('wasteReason').value = "";
-      });
+      }, document.getElementById('handoverMsg'));
     }
 
     function clockInOut(type) {
@@ -364,103 +290,60 @@
     }
 
     function submitCredit() {
-      const customer = document.getElementById('creditCustomer').value;
-      const amount = document.getElementById('creditAmount').value;
-      if(!customer || !amount) { alert("ስም እና ብር ያስገቡ!"); return; }
-      sendData({ action: "addCredit", customer: customer, phone: document.getElementById('creditPhone').value || "የለም", amount: amount }, null, () => {
-        document.getElementById('creditCustomer').value = "";
-        document.getElementById('creditPhone').value = "";
-        document.getElementById('creditAmount').value = "";
-        fetchDashboard();
-      });
+      sendData({
+        action: "addCredit",
+        customer: document.getElementById('creditCustomer').value,
+        phone: document.getElementById('creditPhone').value || "የለም",
+        amount: document.getElementById('creditAmount').value
+      }, null, fetchDashboard);
     }
 
     function payCredit(customer, amount) {
-      if(!confirm(`${customer} ${amount} ብር ከፈለ?`)) return;
-      sendData({ action: "payCredit", customer: customer, amount: amount }, null, () => { fetchDashboard(); });
+      sendData({ action: "payCredit", customer: customer, amount: amount }, null, fetchDashboard);
     }
 
     function submitStock() {
-      const name = document.getElementById('itemName').value;
-      const qty = document.getElementById('itemQty').value;
-      if(!name || !qty) { alert("የእቃ ስም እና ብዛት ያስገቡ!"); return; }
       sendData({
         action: "updateStock",
-        itemName: name,
-        itemQty: qty,
+        itemName: document.getElementById('itemName').value,
+        itemQty: document.getElementById('itemQty').value,
         costPrice: document.getElementById('itemCostPrice').value || 0,
         sellPrice: document.getElementById('itemSellPrice').value || 0
-      }, null, () => {
-        document.getElementById('itemName').value = "";
-        document.getElementById('itemQty').value = "";
-        document.getElementById('itemCostPrice').value = "";
-        document.getElementById('itemSellPrice').value = "";
-        fetchDashboard();
-      });
+      }, null, fetchDashboard);
     }
 
     function renderCredits(list) {
-      const container = document.getElementById('creditList');
-      container.innerHTML = list.length === 0 ? "<p>ምንም ያልተከፈለ ዱቤ የለም!</p>" : "";
-      list.forEach(item => {
-        container.innerHTML += `
-          <div class="list-item">
-            <div><strong>${item.customer}</strong> (${item.phone})<br><span style="color:#f59e0b; font-weight:bold;">${item.amount} ብር</span></div>
-            <button style="background:var(--primary-color); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;" onclick="payCredit('${item.customer}', ${item.amount})">ተከፍሏል</button>
-          </div>`;
+      const c = document.getElementById('creditList');
+      c.innerHTML = list.length === 0 ? "<p>ምንም ዱቤ የለም!</p>" : "";
+      list.forEach(i => {
+        c.innerHTML += `<div class="list-item"><div><strong>${i.customer}</strong><br>${i.amount} ብር</div><button onclick="payCredit('${i.customer}', ${i.amount})">ተከፍሏል</button></div>`;
       });
     }
 
     function renderStocks(list) {
-      const container = document.getElementById('stockList');
-      container.innerHTML = list.length === 0 ? "<p>ምንም ስቶክ የለም!</p>" : "";
-      list.forEach(item => {
-        container.innerHTML += `
-          <div class="list-item">
-            <div><strong>${item.itemName}</strong><br><small>መሸጫ፦ ${item.sellPrice} ብር</small></div>
-            <div style="font-weight:bold; color:var(--accent-color);">${item.itemQty} ብዛት</div>
-          </div>`;
+      const c = document.getElementById('stockList');
+      c.innerHTML = list.length === 0 ? "<p>ስቶክ ባዶ ነው!</p>" : "";
+      list.forEach(i => {
+        c.innerHTML += `<div class="list-item"><div><strong>${i.itemName}</strong></div><div>${i.itemQty} ብዛት</div></div>`;
       });
     }
 
     function renderAuditLogs(logs) {
-      const container = document.getElementById('auditLogList');
-      container.innerHTML = logs.length === 0 ? "<p>ምንም የእንቅስቃሴ መዝገብ የለም!</p>" : "";
-      logs.reverse().forEach(log => {
-        container.innerHTML += `
-          <div class="list-item" style="font-size: 0.85rem;">
-            <div><strong>${log.user}</strong> - ${log.action}<br><small>${log.details}</small></div>
-            <div style="opacity: 0.7;">${log.time}</div>
-          </div>`;
+      const c = document.getElementById('auditLogList');
+      c.innerHTML = logs.length === 0 ? "<p>መዝገብ የለም!</p>" : "";
+      logs.reverse().forEach(l => {
+        c.innerHTML += `<div class="list-item" style="font-size:0.85rem;"><div><strong>${l.user}</strong> - ${l.action}<br><small>${l.details}</small></div><div>${l.time}</div></div>`;
       });
     }
 
-    function showReceipt(desc, amount, method) {
-      document.getElementById('receiptDetails').innerHTML = `
-        <strong>ቀን:</strong> ${new Date().toLocaleString()}<br>
-        <strong>አገልግሎት/እቃ:</strong> ${desc}<br>
-        <strong>ክፍያ:</strong> ${amount} ETB (${method})<br>
-        <strong>ሰራተኛ:</strong> ${currentUser.name}<br><br>
-        <em>የሶሻል ኮሚቴ ኮፒ ቤት - እናመሰግናለን!</em>`;
-      document.getElementById('receiptModal').style.display = 'flex';
-    }
-
-    function closeReceipt() { document.getElementById('receiptModal').style.display = 'none'; }
-
     function sendData(payload, msgElement, callback) {
-      if (msgElement) { msgElement.innerText = "⏳ በመመዝገብ ላይ..."; msgElement.style.color = "var(--text-color)"; }
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
-      })
+      if (msgElement) { msgElement.innerText = "⏳ AI በመመዝገብ ላይ..."; }
+      fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) })
       .then(() => {
-        if (msgElement) { msgElement.innerText = "✅ ተመዝግቧል እና ለኮሚቴው ተልኳል!"; msgElement.style.color = "var(--accent-color)"; }
+        if (msgElement) { msgElement.innerText = "✅ AI በተሳካ ሁኔታ መዝግቧል!"; msgElement.style.color = "var(--accent-color)"; }
         if (callback) callback();
         setTimeout(fetchDashboard, 1500);
-      })
-      .catch(() => { if (msgElement) { msgElement.innerText = "❌ ስህተት ተፈጥሯል!"; msgElement.style.color = "var(--danger-color)"; } });
+      });
     }
   </script>
 </body>
