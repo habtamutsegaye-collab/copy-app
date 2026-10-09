@@ -120,6 +120,7 @@
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
+    <button class="tab-btn" onclick="switchTab('hr', event)">⏱️ ሰራተኛ/ፈረቃ</button>
     <button class="tab-btn" onclick="switchTab('calc', event)">🖩 የዋጋ ማሰቢያ</button>
     <button class="tab-btn" onclick="switchTab('orders', event)">📋 ትዕዛዞች</button>
     <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ መዝገብ</button>
@@ -169,7 +170,38 @@
     <div id="salesMsg" class="status-msg"></div>
   </div>
 
-  <!-- 2. አውቶማቲክ የዋጋ ማሰቢያ -->
+  <!-- 2. HR, Attendance & Shift Handover -->
+  <div id="hr" class="tab-content">
+    <h3>የሰራተኛ መግቢያ/መውጫ እና ፈረቃ ማስረከቢያ</h3>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+      <button style="background: var(--accent-color); color: white; border: none; flex: 1; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="clockInOut('Clock In')">🟢 ስራ ጀምሬአለሁ (Clock In)</button>
+      <button style="background: var(--danger-color); color: white; border: none; flex: 1; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="clockInOut('Clock Out')">🔴 ስራ ጨርሻለሁ (Clock Out)</button>
+    </div>
+
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+    <h3>🔄 የፈረቃ ሂሳብ ማስረከቢያ</h3>
+    <div class="form-group">
+      <label>ተቀባይ ሰራተኛ፡</label>
+      <select id="handoverTo">
+        <option value="ሰራተኛ 1">ሰራተኛ 1</option>
+        <option value="ሰራተኛ 2">ሰራተኛ 2</option>
+        <option value="ባለቤት">ባለቤት</option>
+      </select>
+      <input type="number" id="handoverCash" placeholder="የተስረከበው ካሽ መጠን (ብር)">
+      <input type="text" id="handoverNotes" placeholder="ተጨማሪ ማስታወሻ (ካለ)">
+      <button type="button" class="submit-btn" onclick="submitHandover()">ፈረቃ አስረክብ</button>
+    </div>
+    <div id="hrMsg" class="status-msg"></div>
+
+    <div class="admin-only" style="margin-top: 20px;">
+      <hr style="margin: 20px 0; border-color: var(--border-color);">
+      <h3>🕵️ የእንቅስቃሴ መዝገብ (Audit Log)</h3>
+      <div id="auditLogList"></div>
+    </div>
+  </div>
+
+  <!-- 3. አውቶማቲክ የዋጋ ማሰቢያ -->
   <div id="calc" class="tab-content">
     <h3>የአገልግሎቶች አውቶማቲክ ማሰቢያ</h3>
     <div class="form-group" oninput="calculatePrice()">
@@ -191,7 +223,7 @@
     </div>
   </div>
 
-  <!-- 3. ትዕዛዞች (Orders) -->
+  <!-- 4. ትዕዛዞች (Orders) -->
   <div id="orders" class="tab-content">
     <h3>የህትመት እና የጥራዝ ትዕዛዞች መከታተያ</h3>
     <div class="form-group">
@@ -206,7 +238,7 @@
     <div id="ordersList"></div>
   </div>
 
-  <!-- 4. ዱቤ -->
+  <!-- 5. ዱቤ -->
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ</h3>
     <div class="form-group">
@@ -222,7 +254,7 @@
     <div id="creditList"></div>
   </div>
 
-  <!-- 5. ስቶክ -->
+  <!-- 6. ስቶክ -->
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
     
@@ -255,13 +287,12 @@
 
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxf1DhOadzRw7U6cebUA4yTub-gvqkc6lPxuJLhPa9eq1N4FtJMfIkWMPSTQBaKaiBV/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH4q5PU-5SBwO4-JLCUXSY5Oh5e01KO1KQ8IN3LwlsZrfOF6dmEa9ur5EIXIqNTA8m/exec";
     
     // ⚠️ የቴሌብር እና የባንክ ስልክ/ሂሳብ ቁጥርዎን እዚህ ይተኩ!
     const TELEBIRR_NO = "0911000000"; 
     const CBE_ACCOUNT = "1000000000000";
 
-    // የተጠቃሚዎች አካውንት (Multi-User Credentials)
     const USERS = {
       "admin": { pass: "admin123", role: "Admin", name: "ባለቤት" },
       "staff": { pass: "staff123", role: "Staff", name: "ሰራተኛ" }
@@ -287,7 +318,6 @@
         document.getElementById('loginOverlay').style.display = 'none';
         document.getElementById('userRoleBadge').innerText = `[${currentUser.role}: ${currentUser.name}]`;
         
-        // ሮል መሰረት በማድረግ ማሳየት/መሸሸግ
         if (currentUser.role === 'Staff') {
           document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
         } else {
@@ -356,6 +386,31 @@
       } else {
         container.style.display = 'none';
       }
+    }
+
+    function clockInOut(type) {
+      const staff = currentUser ? currentUser.name : "ሰራተኛ";
+      sendData({ action: "clockInOut", staff: staff, type: type }, document.getElementById('hrMsg'));
+    }
+
+    function submitHandover() {
+      const staff = currentUser ? currentUser.name : "ሰራተኛ";
+      const cash = document.getElementById('handoverCash').value;
+      if (!cash) {
+        alert("የካሽ መጠን ያስገቡ!");
+        return;
+      }
+      const payload = {
+        action: "shiftHandover",
+        fromStaff: staff,
+        toStaff: document.getElementById('handoverTo').value,
+        cashAmount: cash,
+        notes: document.getElementById('handoverNotes').value || ""
+      };
+      sendData(payload, document.getElementById('hrMsg'), () => {
+        document.getElementById('handoverCash').value = "";
+        document.getElementById('handoverNotes').value = "";
+      });
     }
 
     function startScan(targetMode) {
@@ -427,8 +482,30 @@
           renderCredits(globalCredits);
           renderStocks(globalStocks);
           renderOrders(globalOrders);
+          renderAuditLogs(data.auditList || []);
         })
         .catch(err => console.error(err));
+    }
+
+    function renderAuditLogs(logs) {
+      const container = document.getElementById('auditLogList');
+      if(!container) return;
+      container.innerHTML = "";
+      if(logs.length === 0) {
+        container.innerHTML = "<p>ምንም የእንቅስቃሴ መዝገብ የለም!</p>";
+        return;
+      }
+      logs.reverse().forEach(log => {
+        container.innerHTML += `
+          <div class="list-item" style="font-size: 0.85rem;">
+            <div>
+              <strong>${log.user}</strong> - ${log.action}<br>
+              <small>${log.details}</small>
+            </div>
+            <div style="opacity: 0.7;">${log.time}</div>
+          </div>
+        `;
+      });
     }
 
     function showReceipt(desc, amount, method, staff) {
@@ -485,7 +562,8 @@
         customer: customer,
         phone: document.getElementById('orderPhone').value || "የለም",
         orderDesc: document.getElementById('orderDetails').value || "የለም",
-        amount: amount
+        amount: amount,
+        staff: currentUser ? currentUser.name : "ባለቤት"
       };
       sendData(payload, null, () => {
         document.getElementById('orderCustomer').value = "";
