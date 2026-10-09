@@ -29,14 +29,14 @@
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
 
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    h1 { font-size: 1.3rem; margin: 0; }
+    h1 { font-size: 1.2rem; margin: 0; }
     
     .theme-toggle { background: var(--primary-color); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
     .card { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
-    .card h3 { margin: 0; font-size: 0.85rem; opacity: 0.8; }
-    .card p { margin: 8px 0 0; font-size: 1.2rem; font-weight: bold; color: var(--primary-color); }
+    .card h3 { margin: 0; font-size: 0.8rem; opacity: 0.8; }
+    .card p { margin: 8px 0 0; font-size: 1.1rem; font-weight: bold; color: var(--primary-color); }
 
     .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
     .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 15px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: bold; }
@@ -62,15 +62,39 @@
     /* Modal / Receipt Box */
     .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
     .modal-content { background: var(--card-bg); padding: 20px; border-radius: 10px; width: 90%; max-width: 380px; text-align: center; }
+
+    /* Login Screen Overlay */
+    #loginOverlay { display: flex; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: var(--bg-color); justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
+    #loginBox { background: var(--card-bg); padding: 25px; border-radius: 12px; width: 100%; max-width: 320px; border: 1px solid var(--border-color); text-align: center; }
   </style>
 </head>
 <body>
 
+  <!-- Login Screen -->
+  <div id="loginOverlay">
+    <div id="loginBox">
+      <h2 style="margin-top:0;">🔐 መግቢያ (Login)</h2>
+      <div class="form-group">
+        <input type="text" id="loginUser" placeholder="የተጠቃሚ ስም (Username)">
+        <input type="password" id="loginPass" placeholder="የይለፍ ቃል (Password)">
+        <button type="button" class="submit-btn" onclick="doLogin()">ግባ</button>
+      </div>
+      <p id="loginError" style="color: var(--danger-color); margin-top: 15px; font-weight: bold;"></p>
+    </div>
+  </div>
+
   <header>
-    <h1>የኮፒ ቤት መቆጣጠሪያ</h1>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️ Mode</button>
+    <div>
+      <h1 id="shopTitle">የኮፒ ቤት መቆጣጠሪያ</h1>
+      <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
+    </div>
+    <div>
+      <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️</button>
+      <button style="background: var(--danger-color); color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer;" onclick="doLogout()">ውጣ</button>
+    </div>
   </header>
 
+  <!-- Executive Dashboard Grid -->
   <div class="dashboard-grid">
     <div class="card">
       <h3>የዛሬ ገቢ</h3>
@@ -79,6 +103,14 @@
     <div class="card">
       <h3>የዛሬ ወጪ</h3>
       <p id="todayExpense" style="color: var(--danger-color);">0 ብር</p>
+    </div>
+    <div class="card admin-only">
+      <h3>የወሩ ገቢ</h3>
+      <p id="monthlyRevenue" style="color: var(--accent-color);">0 ብር</p>
+    </div>
+    <div class="card admin-only">
+      <h3>የወሩ የተጣራ ትርፍ</h3>
+      <p id="monthlyProfit" style="color: #8b5cf6;">0 ብር</p>
     </div>
     <div class="card">
       <h3>ያልተከፈለ ዱቤ</h3>
@@ -113,7 +145,7 @@
       </select>
       <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ለምሳሌ፡ 2 ጥራዝ)">
       <input type="number" id="salesAmount" placeholder="ጠቅላላ የሽያጭ ብር">
-      <input type="number" id="salesCost" placeholder="የእቃው የመግዣ ዋጋ (ለትርፍ ስሌት)">
+      <input type="number" id="salesCost" class="admin-only" placeholder="የእቃው የመግዣ ዋጋ (ለትርፍ ስሌት)">
       <label>አስመዝጋቢ/ሰራተኛ፡</label>
       <select id="staffName">
         <option value="ባለቤት">ባለቤት</option>
@@ -200,7 +232,7 @@
       <input type="text" id="itemName" placeholder="የእቃ ስም">
       <input type="text" id="itemBarcode" placeholder="ባርኮድ (በካሜራ ወይም በፅሁፍ)">
       <input type="number" id="itemQty" placeholder="ያለው ብዛት">
-      <input type="number" id="itemCostPrice" placeholder="የመግዣ ዋጋ (ብር)">
+      <input type="number" id="itemCostPrice" class="admin-only" placeholder="የመግዣ ዋጋ (ብር)">
       <input type="number" id="itemSellPrice" placeholder="የመሸጫ ዋጋ (ብር)">
       <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ/አድስ</button>
     </div>
@@ -223,12 +255,19 @@
 
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYuLL1QaM8ySamBVLENI-lh9wEmNkmM306WkqZMXoR-Ed45l6KbR5WERIOBghcJwOg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxf1DhOadzRw7U6cebUA4yTub-gvqkc6lPxuJLhPa9eq1N4FtJMfIkWMPSTQBaKaiBV/exec";
     
     // ⚠️ የቴሌብር እና የባንክ ስልክ/ሂሳብ ቁጥርዎን እዚህ ይተኩ!
-    const TELEBIRR_NO = "0904616146"; 
+    const TELEBIRR_NO = "0911000000"; 
     const CBE_ACCOUNT = "1000000000000";
 
+    // የተጠቃሚዎች አካውንት (Multi-User Credentials)
+    const USERS = {
+      "admin": { pass: "admin123", role: "Admin", name: "ባለቤት" },
+      "staff": { pass: "staff123", role: "Staff", name: "ሰራተኛ" }
+    };
+
+    let currentUser = null;
     let globalCredits = [];
     let globalStocks = [];
     let globalOrders = [];
@@ -236,6 +275,36 @@
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
+    }
+
+    function doLogin() {
+      const u = document.getElementById('loginUser').value.trim();
+      const p = document.getElementById('loginPass').value.trim();
+      const err = document.getElementById('loginError');
+
+      if (USERS[u] && USERS[u].pass === p) {
+        currentUser = USERS[u];
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('userRoleBadge').innerText = `[${currentUser.role}: ${currentUser.name}]`;
+        
+        // ሮል መሰረት በማድረግ ማሳየት/መሸሸግ
+        if (currentUser.role === 'Staff') {
+          document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+        } else {
+          document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+        }
+        fetchDashboard();
+      } else {
+        err.innerText = "❌ የተሳሳተ የተጠቃሚ ስም ወይም የይለፍ ቃል!";
+      }
+    }
+
+    function doLogout() {
+      currentUser = null;
+      document.getElementById('loginUser').value = "";
+      document.getElementById('loginPass').value = "";
+      document.getElementById('loginError').innerText = "";
+      document.getElementById('loginOverlay').style.display = 'flex';
     }
 
     function playSuccessSound() {
@@ -348,6 +417,8 @@
         .then(data => {
           document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
           document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብር";
+          document.getElementById('monthlyRevenue').innerText = (data.monthlyRevenue || 0) + " ብር";
+          document.getElementById('monthlyProfit').innerText = (data.monthlyProfit || 0) + " ብር";
           document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
           
           globalCredits = data.creditsList || [];
@@ -463,11 +534,12 @@
       }
       list.forEach(item => {
         const isLow = item.itemQty <= 5;
+        const priceInfo = currentUser && currentUser.role === 'Admin' ? `መግዣ፡ ${item.costPrice || 0} ብር | መሸጫ፡ ${item.sellPrice || 0} ብር` : `መሸጫ፡ ${item.sellPrice || 0} ብር`;
         container.innerHTML += `
           <div class="list-item">
             <div>
               <strong>${item.itemName}</strong> ${item.barcode ? `<small>(${item.barcode})</small>` : ''}<br>
-              <small>መግዣ፡ ${item.costPrice || 0} ብር | መሸጫ፡ ${item.sellPrice || 0} ብር</small>
+              <small>${priceInfo}</small>
             </div>
             <div style="font-weight: bold; color: ${isLow ? 'var(--danger-color)' : 'var(--accent-color)'};">
               ${item.itemQty} ብዛት ${isLow ? '⚠️ (አነስተኛ)' : ''}
@@ -596,8 +668,6 @@
         }
       });
     }
-
-    fetchDashboard();
   </script>
 </body>
 </html>
