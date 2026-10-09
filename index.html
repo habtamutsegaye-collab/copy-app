@@ -6,6 +6,7 @@
   <title>የኮፒ ቤት እና ስቴሽነሪ መቆጣጠሪያ PWA</title>
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#2563eb">
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     :root {
       --bg-color: #f3f4f6;
@@ -53,6 +54,10 @@
     .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
     .pay-btn { background: var(--primary-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
     .search-input { margin-bottom: 10px; width: 100%; }
+
+    #qrContainer { text-align: center; margin-top: 10px; display: none; }
+    #qrContainer img { width: 180px; height: 180px; border-radius: 8px; border: 2px solid var(--primary-color); }
+    #reader { width: 100%; display: none; margin-bottom: 15px; }
   </style>
 </head>
 <body>
@@ -86,6 +91,10 @@
 
   <div id="sales" class="tab-content active">
     <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
+    
+    <button type="button" style="background: var(--primary-color); color: white; border: none; margin-bottom: 10px; cursor: pointer;" onclick="startScan('sales')">📷 ባርኮድ ስካን አድርግ</button>
+    <div id="reader"></div>
+
     <div class="form-group">
       <label>የግብይት አይነት፡</label>
       <select id="salesType">
@@ -96,14 +105,21 @@
         <option value="paper">ባዶ ወረቀት</option>
         <option value="expense">🔻 የቢሮ ወጪ</option>
       </select>
-      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ለምሳሌ፡ 2 ጥራዝ፣ 5 እስክሪፕቶ)">
-      <input type="number" id="salesAmount" placeholder="ጠቅላላ ብር (ቁጥር ብቻ)">
+      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ለምሳሌ፡ 2 ጥራዝ)">
+      <input type="number" id="salesAmount" placeholder="ጠቅላላ የሽያጭ ብር">
+      <input type="number" id="salesCost" placeholder="የእቃው የመግዣ ዋጋ (ለትርፍ ስሌት)">
       <label>የክፍያ መንገድ፡</label>
-      <select id="paymentMethod">
+      <select id="paymentMethod" onchange="toggleQR()">
         <option value="Cash">በካሽ (Cash)</option>
         <option value="Telebirr">ቴሌብር (Telebirr)</option>
         <option value="CBE">CBE Birr/Bank</option>
       </select>
+
+      <div id="qrContainer">
+        <p style="font-weight: bold; margin: 5px 0;">📲 ደንበኛው ስካን እንዲያደርግ ይህንን ያሳዩ፦</p>
+        <img id="qrImage" src="" alt="QR Code">
+      </div>
+
       <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ</button>
     </div>
     <div id="salesMsg" class="status-msg"></div>
@@ -147,9 +163,15 @@
 
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
+    
+    <button type="button" style="background: var(--primary-color); color: white; border: none; margin-bottom: 10px; cursor: pointer;" onclick="startScan('stock')">📷 የእቃ ባርኮድ ስካን አድርግ</button>
+
     <div class="form-group">
-      <input type="text" id="itemName" placeholder="የእቃ ስም (ለምሳሌ፡ እስክሪፕቶ፣ A4 ወረቀት)">
+      <input type="text" id="itemName" placeholder="የእቃ ስም">
+      <input type="text" id="itemBarcode" placeholder="ባርኮድ (በካሜራ ወይም በፅሁፍ)">
       <input type="number" id="itemQty" placeholder="ያለው ብዛት">
+      <input type="number" id="itemCostPrice" placeholder="የመግዣ ዋጋ (ብር)">
+      <input type="number" id="itemSellPrice" placeholder="የመሸጫ ዋጋ (ብር)">
       <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ/አድስ</button>
     </div>
     <div id="stockMsg" class="status-msg"></div>
@@ -161,15 +183,20 @@
 
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwry6Bx0NXcKq32kZOrNDA9jmFTB-8tQ_4OI_GzO9rJoPmDQuydOyr_gz6IMErGOYkK/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYcY3oQgnR9diopWOpULz_VdACjFUYlrrzpbGDQF9CoBI_2hbYvFA2l6iL-zf8uSXd/exec";
+    
+    // ⚠️ የቴሌብር እና የባንክ ስልክ/ሂሳብ ቁጥርዎን እዚህ ይተኩ!
+    const TELEBIRR_NO = "0911000000"; 
+    const CBE_ACCOUNT = "1000000000000";
+
     let globalCredits = [];
     let globalStocks = [];
+    let html5QrcodeScanner = null;
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
     }
 
-    // የድምፅ ማረጋገጫ (Beep Sound)
     function playSuccessSound() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -199,6 +226,52 @@
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       evt.target.classList.add('active');
+      if(html5QrcodeScanner) {
+        html5QrcodeScanner.clear();
+        document.getElementById('reader').style.display = "none";
+      }
+    }
+
+    function toggleQR() {
+      const method = document.getElementById('paymentMethod').value;
+      const container = document.getElementById('qrContainer');
+      const img = document.getElementById('qrImage');
+
+      if (method === 'Telebirr') {
+        container.style.display = 'block';
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=tel:${TELEBIRR_NO}`;
+      } else if (method === 'CBE') {
+        container.style.display = 'block';
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${CBE_ACCOUNT}`;
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
+    function startScan(targetMode) {
+      const readerElem = document.getElementById('reader');
+      readerElem.style.display = "block";
+
+      html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+      html5QrcodeScanner.render((decodedText) => {
+        html5QrcodeScanner.clear();
+        readerElem.style.display = "none";
+        playSuccessSound();
+
+        if (targetMode === 'sales') {
+          const matchedItem = globalStocks.find(s => s.barcode === decodedText);
+          if (matchedItem) {
+            document.getElementById('salesDesc').value = matchedItem.itemName;
+            document.getElementById('salesAmount').value = matchedItem.sellPrice || 0;
+            document.getElementById('salesCost').value = matchedItem.costPrice || 0;
+            document.getElementById('salesType').value = 'stationery';
+          } else {
+            alert("ባርኮዱ ተነቧል ነገር ግን በስቶክ አልተገኘም፦ " + decodedText);
+          }
+        } else if (targetMode === 'stock') {
+          document.getElementById('itemBarcode').value = decodedText;
+        }
+      });
     }
 
     function calculatePrice() {
@@ -281,7 +354,10 @@
         const isLow = item.itemQty <= 5;
         container.innerHTML += `
           <div class="list-item">
-            <div><strong>${item.itemName}</strong></div>
+            <div>
+              <strong>${item.itemName}</strong> ${item.barcode ? `<small>(${item.barcode})</small>` : ''}<br>
+              <small>መግዣ፡ ${item.costPrice || 0} ብር | መሸጫ፡ ${item.sellPrice || 0} ብር</small>
+            </div>
             <div style="font-weight: bold; color: ${isLow ? 'var(--danger-color)' : 'var(--accent-color)'};">
               ${item.itemQty} ብዛት ${isLow ? '⚠️ (አነስተኛ)' : ''}
             </div>
@@ -292,7 +368,7 @@
 
     function filterStock() {
       const q = document.getElementById('searchStock').value.toLowerCase();
-      const filtered = globalStocks.filter(s => s.itemName.toLowerCase().includes(q));
+      const filtered = globalStocks.filter(s => s.itemName.toLowerCase().includes(q) || (s.barcode && s.barcode.includes(q)));
       renderStocks(filtered);
     }
 
@@ -315,11 +391,13 @@
         type: document.getElementById('salesType').value,
         desc: document.getElementById('salesDesc').value || "የለም",
         amount: amount,
+        cost: document.getElementById('salesCost').value || 0,
         paymentMethod: document.getElementById('paymentMethod').value
       };
       sendData(payload, msg, () => {
         document.getElementById('salesDesc').value = "";
         document.getElementById('salesAmount').value = "";
+        document.getElementById('salesCost').value = "";
       });
     }
 
@@ -357,11 +435,17 @@
       const payload = {
         action: "updateStock",
         itemName: name,
-        itemQty: qty
+        itemBarcode: document.getElementById('itemBarcode').value || "",
+        itemQty: qty,
+        costPrice: document.getElementById('itemCostPrice').value || 0,
+        sellPrice: document.getElementById('itemSellPrice').value || 0
       };
       sendData(payload, msg, () => {
         document.getElementById('itemName').value = "";
+        document.getElementById('itemBarcode').value = "";
         document.getElementById('itemQty').value = "";
+        document.getElementById('itemCostPrice').value = "";
+        document.getElementById('itemSellPrice').value = "";
       });
     }
 
@@ -376,7 +460,7 @@
         body: JSON.stringify(payload)
       })
       .then(() => {
-        playSuccessSound(); // የድምፅ ማረጋገጫ
+        playSuccessSound();
         msgElement.innerText = "✅ መረጃው በትክክል ተመዝግቧል!";
         msgElement.style.color = "var(--accent-color)";
         if (resetForm) resetForm();
