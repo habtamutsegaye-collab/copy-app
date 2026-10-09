@@ -58,6 +58,10 @@
     #qrContainer { text-align: center; margin-top: 10px; display: none; }
     #qrContainer img { width: 180px; height: 180px; border-radius: 8px; border: 2px solid var(--primary-color); }
     #reader { width: 100%; display: none; margin-bottom: 15px; }
+
+    /* Modal / Receipt Box */
+    .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: var(--card-bg); padding: 20px; border-radius: 10px; width: 90%; max-width: 380px; text-align: center; }
   </style>
 </head>
 <body>
@@ -85,10 +89,12 @@
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
     <button class="tab-btn" onclick="switchTab('calc', event)">🖩 የዋጋ ማሰቢያ</button>
+    <button class="tab-btn" onclick="switchTab('orders', event)">📋 ትዕዛዞች</button>
     <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ መዝገብ</button>
     <button class="tab-btn" onclick="switchTab('stock', event)">📦 የእቃ መቆጣጠሪያ</button>
   </div>
 
+  <!-- 1. ሽያጭ እና ወጪ -->
   <div id="sales" class="tab-content active">
     <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
     
@@ -108,6 +114,12 @@
       <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ለምሳሌ፡ 2 ጥራዝ)">
       <input type="number" id="salesAmount" placeholder="ጠቅላላ የሽያጭ ብር">
       <input type="number" id="salesCost" placeholder="የእቃው የመግዣ ዋጋ (ለትርፍ ስሌት)">
+      <label>አስመዝጋቢ/ሰራተኛ፡</label>
+      <select id="staffName">
+        <option value="ባለቤት">ባለቤት</option>
+        <option value="ሰራተኛ 1">ሰራተኛ 1</option>
+        <option value="ሰራተኛ 2">ሰራተኛ 2</option>
+      </select>
       <label>የክፍያ መንገድ፡</label>
       <select id="paymentMethod" onchange="toggleQR()">
         <option value="Cash">በካሽ (Cash)</option>
@@ -120,11 +132,12 @@
         <img id="qrImage" src="" alt="QR Code">
       </div>
 
-      <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ</button>
+      <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ እና ደረሰኝ አውጣ</button>
     </div>
     <div id="salesMsg" class="status-msg"></div>
   </div>
 
+  <!-- 2. አውቶማቲክ የዋጋ ማሰቢያ -->
   <div id="calc" class="tab-content">
     <h3>የአገልግሎቶች አውቶማቲክ ማሰቢያ</h3>
     <div class="form-group" oninput="calculatePrice()">
@@ -146,6 +159,22 @@
     </div>
   </div>
 
+  <!-- 3. ትዕዛዞች (Orders) -->
+  <div id="orders" class="tab-content">
+    <h3>የህትመት እና የጥራዝ ትዕዛዞች መከታተያ</h3>
+    <div class="form-group">
+      <input type="text" id="orderCustomer" placeholder="የደንበኛ ስም">
+      <input type="tel" id="orderPhone" placeholder="ስልክ ቁጥር">
+      <input type="text" id="orderDetails" placeholder="የትዕዛዝ ዝርዝር (ለምሳሌ፡ 30 ገጽ ጥራዝ)">
+      <input type="number" id="orderAmount" placeholder="የተስማሙበት ዋጋ (ብር)">
+      <button type="button" class="submit-btn" onclick="submitOrder()">ትዕዛዝ መዝግብ</button>
+    </div>
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+    <h3>በሂደት ላይ ያሉ ትዕዛዞች</h3>
+    <div id="ordersList"></div>
+  </div>
+
+  <!-- 4. ዱቤ -->
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ</h3>
     <div class="form-group">
@@ -161,6 +190,7 @@
     <div id="creditList"></div>
   </div>
 
+  <!-- 5. ስቶክ -->
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
     
@@ -181,9 +211,19 @@
     <div id="stockList"></div>
   </div>
 
+  <!-- ዲጂታል ደረሰኝ Pop-up Modal -->
+  <div id="receiptModal" class="modal">
+    <div class="modal-content">
+      <h2 style="margin-top:0;">🧾 የክፍያ ደረሰኝ</h2>
+      <hr style="border-color: var(--border-color);">
+      <p id="receiptDetails" style="text-align: left; font-size: 0.95rem; line-height: 1.6;"></p>
+      <button style="background: var(--accent-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;" onclick="closeReceipt()">ዝጋ (OK)</button>
+    </div>
+  </div>
+
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYcY3oQgnR9diopWOpULz_VdACjFUYlrrzpbGDQF9CoBI_2hbYvFA2l6iL-zf8uSXd/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEBoCG1n3FYpzClt6hDD2IthVd4AgGXbXbIFo4WIk7a9H04WNljjkBytPBy2r1wYWC/exec";
     
     // ⚠️ የቴሌብር እና የባንክ ስልክ/ሂሳብ ቁጥርዎን እዚህ ይተኩ!
     const TELEBIRR_NO = "0904616146"; 
@@ -191,6 +231,7 @@
 
     let globalCredits = [];
     let globalStocks = [];
+    let globalOrders = [];
     let html5QrcodeScanner = null;
 
     if ('serviceWorker' in navigator) {
@@ -311,10 +352,80 @@
           
           globalCredits = data.creditsList || [];
           globalStocks = data.stocksList || [];
+          globalOrders = data.ordersList || [];
           renderCredits(globalCredits);
           renderStocks(globalStocks);
+          renderOrders(globalOrders);
         })
         .catch(err => console.error(err));
+    }
+
+    function showReceipt(desc, amount, method, staff) {
+      const date = new Date().toLocaleString();
+      const details = `
+        <strong>ቀን:</strong> ${date}<br>
+        <strong>አገልግሎት/እቃ:</strong> ${desc}<br>
+        <strong>ክፍያ መጠን:</strong> ${amount} ETB<br>
+        <strong>የክፍያ መንገድ:</strong> ${method}<br>
+        <strong>አስመዝጋቢ:</strong> ${staff}<br><br>
+        <em>ስለጎበኙን እናመሰግናለን!</em>
+      `;
+      document.getElementById('receiptDetails').innerHTML = details;
+      document.getElementById('receiptModal').style.display = 'flex';
+    }
+
+    function closeReceipt() {
+      document.getElementById('receiptModal').style.display = 'none';
+    }
+
+    function renderOrders(list) {
+      const container = document.getElementById('ordersList');
+      container.innerHTML = "";
+      if (list.length === 0) {
+        container.innerHTML = "<p>ምንም በሂደት ላይ ያለ ትዕዛዝ የለም!</p>";
+        return;
+      }
+      list.forEach(item => {
+        container.innerHTML += `
+          <div class="list-item">
+            <div>
+              <strong>${item.customer}</strong> (${item.phone})<br>
+              <small>${item.orderDesc} - ${item.amount} ብር</small><br>
+              <span style="color: var(--primary-color); font-weight: bold;">ሁኔታ፦ ${item.status}</span>
+            </div>
+            <div>
+              <button class="pay-btn" style="background:#f59e0b;" onclick="updateOrder('${item.customer}', 'ተጠናቋል')">ተጠናቋል</button>
+              <button class="pay-btn" style="background:var(--accent-color);" onclick="updateOrder('${item.customer}', 'ተረክቧል')">ተረክቧል</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function submitOrder() {
+      const customer = document.getElementById('orderCustomer').value;
+      const amount = document.getElementById('orderAmount').value;
+      if (!customer || !amount) {
+        alert("የደንበኛ ስም እና ዋጋ ያስገቡ!");
+        return;
+      }
+      const payload = {
+        action: "addOrder",
+        customer: customer,
+        phone: document.getElementById('orderPhone').value || "የለም",
+        orderDesc: document.getElementById('orderDetails').value || "የለም",
+        amount: amount
+      };
+      sendData(payload, null, () => {
+        document.getElementById('orderCustomer').value = "";
+        document.getElementById('orderPhone').value = "";
+        document.getElementById('orderDetails').value = "";
+        document.getElementById('orderAmount').value = "";
+      });
+    }
+
+    function updateOrder(customer, newStatus) {
+      sendData({ action: "updateOrderStatus", customer: customer, newStatus: newStatus });
     }
 
     function renderCredits(list) {
@@ -381,20 +492,28 @@
     function submitSales() {
       const msg = document.getElementById('salesMsg');
       const amount = document.getElementById('salesAmount').value;
+      const desc = document.getElementById('salesDesc').value || "የለም";
+      const method = document.getElementById('paymentMethod').value;
+      const staff = document.getElementById('staffName').value;
+
       if (!amount) {
         msg.innerText = "⚠️ እባክዎን ብር ያስገቡ!";
         msg.style.color = "var(--danger-color)";
         return;
       }
+
       const payload = {
         action: "addSales",
         type: document.getElementById('salesType').value,
-        desc: document.getElementById('salesDesc').value || "የለም",
+        desc: desc,
         amount: amount,
         cost: document.getElementById('salesCost').value || 0,
-        paymentMethod: document.getElementById('paymentMethod').value
+        paymentMethod: method,
+        staff: staff
       };
+
       sendData(payload, msg, () => {
+        showReceipt(desc, amount, method, staff);
         document.getElementById('salesDesc').value = "";
         document.getElementById('salesAmount').value = "";
         document.getElementById('salesCost').value = "";
@@ -450,8 +569,10 @@
     }
 
     function sendData(payload, msgElement, resetForm) {
-      msgElement.innerText = "⏳ በመመዝገብ ላይ...";
-      msgElement.style.color = "var(--text-color)";
+      if (msgElement) {
+        msgElement.innerText = "⏳ በመመዝገብ ላይ...";
+        msgElement.style.color = "var(--text-color)";
+      }
 
       fetch(SCRIPT_URL, {
         method: "POST",
@@ -461,14 +582,18 @@
       })
       .then(() => {
         playSuccessSound();
-        msgElement.innerText = "✅ መረጃው በትክክል ተመዝግቧል!";
-        msgElement.style.color = "var(--accent-color)";
+        if (msgElement) {
+          msgElement.innerText = "✅ መረጃው በትክክል ተመዝግቧል!";
+          msgElement.style.color = "var(--accent-color)";
+        }
         if (resetForm) resetForm();
         setTimeout(fetchDashboard, 2000);
       })
       .catch(err => {
-        msgElement.innerText = "❌ ስህተት ተፈጥሯል!";
-        msgElement.style.color = "var(--danger-color)";
+        if (msgElement) {
+          msgElement.innerText = "❌ ስህተት ተፈጥሯል!";
+          msgElement.style.color = "var(--danger-color)";
+        }
       });
     }
 
