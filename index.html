@@ -128,6 +128,7 @@
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
+    <button class="tab-btn" onclick="switchTab('digital', event)">💻 ስካን/ዲጂታል</button>
     <button class="tab-btn" onclick="switchTab('pnl', event)">📊 P&L ሪፖርት</button>
     <button class="tab-btn" onclick="switchTab('online', event)">🌐 Online Order</button>
     <button class="tab-btn" onclick="switchTab('crm', event)">💳 CRM/Wallet</button>
@@ -187,7 +188,34 @@
     <div id="salesMsg" class="status-msg"></div>
   </div>
 
-  <!-- 2. Profit & Loss Statement (Phase 8) -->
+  <!-- 2. ስካን እና ዲጂታል አገልግሎት (School Digital Services) -->
+  <div id="digital" class="tab-content">
+    <h3>💻 የዲጂታል፣ ስካን እና የተበላሹ ወረቀቶች መቆጣጠሪያ</h3>
+    
+    <div class="form-group">
+      <h4>📂 ስካን እና ፋይል ማስተላለፊያ</h4>
+      <input type="text" id="digCustomer" placeholder="የደንበኛ/ተማሪ ስም">
+      <select id="digServiceType">
+        <option value="Scan to Email/Telegram">ሰነድ ስካን (Scan to Email/Telegram)</option>
+        <option value="Flash Drive File Transfer">ከፍላሽ ፋይል መጫን (Flash File Transfer)</option>
+        <option value="Typing Service">የጽሁፍ ታይፕ (Typing Service)</option>
+      </select>
+      <input type="number" id="digAmount" placeholder="የአገልግሎት ክፍያ (ብር)">
+      <button type="button" class="submit-btn" onclick="submitDigitalService()">ዲጂታል አገልግሎት መዝግብ</button>
+    </div>
+
+    <hr style="margin: 20px 0; border-color: var(--border-color);">
+
+    <div class="form-group">
+      <h4>🗑️ የተበላሹ ወረቀቶች (Waste Paper) መዝገብ</h4>
+      <input type="number" id="wasteQty" placeholder="የተበላሸ ወረቀት ብዛት (ገጽ)">
+      <input type="text" id="wasteReason" placeholder="ምክንያት (ለምሳሌ፦ ማሽን ጃም አደረገ / ፎንት ተበላሸ)">
+      <button type="button" class="submit-btn" style="background:var(--danger-color);" onclick="submitWastePaper()">የተበላሸ ወረቀት መዝግብ</button>
+    </div>
+    <div id="digitalMsg" class="status-msg"></div>
+  </div>
+
+  <!-- 3. Profit & Loss Statement -->
   <div id="pnl" class="tab-content admin-only">
     <h3>📊 የወሩ የትርፍ እና ኪሳራ መግለጫ (Profit & Loss Statement)</h3>
     <div class="card" style="text-align:left; line-height: 2;">
@@ -198,10 +226,10 @@
     </div>
   </div>
 
-  <!-- 3. Online Customer Order Page (Phase 8) -->
+  <!-- 4. Online Customer Order Page -->
   <div id="online" class="tab-content">
     <h3>🌐 የመስመር ላይ ፋይል ማዘዣ (Online Customer Order)</h3>
-    <p style="font-size:0.9rem; opacity:0.8;">ደንበኞች በኢንተርኔት ሆነው የኮፒ/ህትመት ትዕዛዝ የሚልኩበት ገጽ፦</p>
+    <p style="font-size:0.9rem; opacity:0.8;">ተማሪዎች እና መምህራን በኢንተርኔት ሆነው የኮፒ/ህትመት ትዕዛዝ የሚልኩበት ገጽ፦</p>
     <div class="form-group">
       <input type="text" id="onlineName" placeholder="የእርስዎ ስም">
       <input type="tel" id="onlinePhone" placeholder="ስልክ ቁጥር">
@@ -211,7 +239,7 @@
     <div id="onlineMsg" class="status-msg"></div>
   </div>
 
-  <!-- 4. CRM, Wallet & Delivery -->
+  <!-- 5. CRM, Wallet & Delivery -->
   <div id="crm" class="tab-content">
     <h3>💳 የደንበኛ Wallet እና 🚚 ዴሊቨሪ መከታተያ</h3>
     
@@ -245,7 +273,7 @@
     <div id="deliveriesList"></div>
   </div>
 
-  <!-- 5. ማሽን፣ ቀለም እና አቅራቢዎች -->
+  <!-- 6. ማሽን፣ ቀለም እና አቅራቢዎች -->
   <div id="machines" class="tab-content">
     <h3>🖨️ የወረቀት/ቀለም ፍጆታ እና የማሽን ጥገና</h3>
     
@@ -286,7 +314,7 @@
     <div id="suppliersList"></div>
   </div>
 
-  <!-- 6. HR, Attendance & Shift Handover -->
+  <!-- 7. HR, Attendance & Shift Handover -->
   <div id="hr" class="tab-content">
     <h3>የሰራተኛ መግቢያ/መውጫ እና ፈረቃ ማስረከቢያ</h3>
     
@@ -317,7 +345,7 @@
     </div>
   </div>
 
-  <!-- 7. አውቶማቲክ የዋጋ ማሰቢያ -->
+  <!-- 8. አውቶማቲክ የዋጋ ማሰቢያ -->
   <div id="calc" class="tab-content">
     <h3>የአገልግሎቶች አውቶማቲክ ማሰቢያ</h3>
     <div class="form-group" oninput="calculatePrice()">
@@ -339,7 +367,7 @@
     </div>
   </div>
 
-  <!-- 8. ትዕዛዞች (Orders) -->
+  <!-- 9. ትዕዛዞች (Orders) -->
   <div id="orders" class="tab-content">
     <h3>የህትመት እና የጥራዝ ትዕዛዞች መከታተያ</h3>
     <div class="form-group">
@@ -354,7 +382,7 @@
     <div id="ordersList"></div>
   </div>
 
-  <!-- 9. ዱቤ -->
+  <!-- 10. ዱቤ -->
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ</h3>
     <div class="form-group">
@@ -370,7 +398,7 @@
     <div id="creditList"></div>
   </div>
 
-  <!-- 10. ስቶክ -->
+  <!-- 11. ስቶክ -->
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
     
@@ -403,10 +431,10 @@
 
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMuDmSuF9JhLlFp55uL9YVleUyzjcV5F5NO-INmYoSXFBEy_RGC2wPfpaKciPyh4Vh/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEFtG9A_2EYFa_gkvGVJ1PH9c78st49oGHUxRN4uG1PtHuLBHUGzRpD78CXFvxIJOV/exec";
     
     // ⚠️ የቴሌብር እና የባንክ ስልክ/ሂሳብ ቁጥርዎን እዚህ ይተኩ!
-    const TELEBIRR_NO = "0904616146"; 
+    const TELEBIRR_NO = "0911000000"; 
     const CBE_ACCOUNT = "1000000000000";
 
     const USERS = {
@@ -502,6 +530,37 @@
       } else {
         container.style.display = 'none';
       }
+    }
+
+    function submitDigitalService() {
+      const c = document.getElementById('digCustomer').value;
+      const amount = document.getElementById('digAmount').value;
+      if(!c || !amount) { alert("የደንበኛ ስም እና ክፍያ ያስገቡ!"); return; }
+      sendData({
+        action: "addDigitalService",
+        customer: c,
+        serviceType: document.getElementById('digServiceType').value,
+        amount: amount,
+        staff: currentUser ? currentUser.name : "Admin"
+      }, document.getElementById('digitalMsg'), () => {
+        document.getElementById('digCustomer').value = "";
+        document.getElementById('digAmount').value = "";
+      });
+    }
+
+    function submitWastePaper() {
+      const qty = document.getElementById('wasteQty').value;
+      const reason = document.getElementById('wasteReason').value;
+      if(!qty || !reason) { alert("የወረቀት ብዛት እና ምክንያት ያስገቡ!"); return; }
+      sendData({
+        action: "addWastePaper",
+        qty: qty,
+        reason: reason,
+        staff: currentUser ? currentUser.name : "Admin"
+      }, document.getElementById('digitalMsg'), () => {
+        document.getElementById('wasteQty').value = "";
+        document.getElementById('wasteReason').value = "";
+      });
     }
 
     function submitOnlineOrder() {
