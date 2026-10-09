@@ -91,6 +91,7 @@
       </select>
       <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ካለ)">
       <input type="number" id="salesAmount" placeholder="ጠቅላላ ብር (ቁጥር ብቻ)">
+      <label>የክፍያ መንገድ፡</label>
       <select id="paymentMethod">
         <option value="Cash">በካሽ (Cash)</option>
         <option value="Telebirr">ቴሌብር (Telebirr)</option>
@@ -141,7 +142,7 @@
 
   <script>
     // ⚠️ ከ Google Apps Script የተቀበሉትን አዲሱን Web App URL እዚህ ቦታ ይተኩ!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5Zg0TpHy1rDToS-hbWAsh0d9ap6PyjmTCtU3Na4VFBrsKwEFCkH-QU8K21dVD3oxn/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBJeGKWSNSHxHUh4MI4p5JXdEUfsKqdBuQxFBMs699zuG4nsSCHr7wJS2QhnjIc7KM/exec";
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
@@ -186,7 +187,7 @@
         .then(res => res.json())
         .then(data => {
           document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
-          document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብር";
+          document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብrm";
           document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
         })
         .catch(err => console.error(err));
