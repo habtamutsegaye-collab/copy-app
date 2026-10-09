@@ -75,7 +75,7 @@
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ/ወጪ</button>
-    <button class="tab-btn" onclick="switchTab('calc', event)">🖩 የኮፒ ማሰቢያ</button>
+    <button class="tab-btn" onclick="switchTab('calc', event)">🖩 የዋጋ ማሰቢያ</button>
     <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ መዝገብ</button>
     <button class="tab-btn" onclick="switchTab('stock', event)">📦 የእቃ መቆጣጠሪያ</button>
   </div>
@@ -85,11 +85,14 @@
     <div class="form-group">
       <label>የግብይት አይነት፡</label>
       <select id="salesType">
-        <option value="service">አገልግሎት (ኮፒ/ህትመት...)</option>
-        <option value="item">ስቴሽነሪ እቃ</option>
-        <option value="expense">የቢሮ ወጪ</option>
+        <option value="copy">ኮፒ (ከፊት ብቻ / መንስኤ)</option>
+        <option value="print">ፕሪንት (Print)</option>
+        <option value="stationery">ስቴሽነሪ (እስክሪፕቶ/ደብተር/ጥራዝ...)</option>
+        <option value="laminate">ላሚኔት (Laminate)</option>
+        <option value="paper">ባዶ ወረቀት</option>
+        <option value="expense">🔻 የቢሮ ወጪ</option>
       </select>
-      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ካለ)">
+      <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ (ለምሳሌ፡ 2 ጥራዝ፣ 5 እስክሪፕቶ)">
       <input type="number" id="salesAmount" placeholder="ጠቅላላ ብር (ቁጥር ብቻ)">
       <label>የክፍያ መንገድ፡</label>
       <select id="paymentMethod">
@@ -103,19 +106,23 @@
   </div>
 
   <div id="calc" class="tab-content">
-    <h3>አውቶማቲክ የኮፒ/ህትመት ማሰቢያ</h3>
-    <div class="form-group" oninput="calculateCopyPrice()">
-      <label>የገጽ ብዛት፡</label>
-      <input type="number" id="pageCount" placeholder="ምሳሌ፡ 50">
+    <h3>የአገልግሎቶች አውቶማቲክ ማሰቢያ</h3>
+    <div class="form-group" oninput="calculatePrice()">
       <label>የአገልግሎት አይነት፡</label>
-      <select id="copyType">
-        <option value="black">ጥቁር እና ነጭ ኮፒ</option>
-        <option value="black_double">ጥቁር እና ነጭ (መንስኤ)</option>
-        <option value="color">ከለር ህትመት</option>
+      <select id="calcType">
+        <option value="copy_single">ኮፒ (ከፊት ብቻ) - 4 ብር</option>
+        <option value="copy_double">ኮፒ (ከፊትና ጀርባ/መንስኤ) - 8 ብር</option>
+        <option value="print">ፕሪንት (Print) - 5 ብር</option>
+        <option value="blank_paper">ባዶ ወረቀት - 2.50 ብር</option>
+        <option value="binding">ጥራዝ (Binding) - 35 ብር</option>
+        <option value="laminate">ላሚኔት - 15 ብር</option>
       </select>
+      <label>ብዛት (የገጽ/የእቃ)፡</label>
+      <input type="number" id="calcQty" placeholder="ምሳሌ፡ 10" value="1">
       <div style="margin-top: 15px; font-size: 1.2rem; font-weight: bold;">
-        የተሰላ ዋጋ፡ <span id="calculatedPrice" style="color: var(--accent-color);">0 ብር</span>
+        የተሰላ ጠቅላላ ዋጋ፡ <span id="calculatedPrice" style="color: var(--accent-color);">4 ብር</span>
       </div>
+      <button type="button" class="submit-btn" onclick="transferCalcToSales()">ወደ ሽያጭ መዝገብ ላክ</button>
     </div>
   </div>
 
@@ -133,7 +140,7 @@
   <div id="stock" class="tab-content">
     <h3>የእቃ መጠን መቆጣጠሪያ</h3>
     <div class="form-group">
-      <input type="text" id="itemName" placeholder="የእቃ ስም">
+      <input type="text" id="itemName" placeholder="የእቃ ስም (ለምሳሌ፡ እስክሪፕቶ፣ A4 ወረቀት)">
       <input type="number" id="itemQty" placeholder="ያለው ብዛት">
       <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ/አድስ</button>
     </div>
@@ -164,21 +171,33 @@
       evt.target.classList.add('active');
     }
 
-    function calculateCopyPrice() {
-      const pages = parseInt(document.getElementById('pageCount').value) || 0;
-      const type = document.getElementById('copyType').value;
-      let pricePerPage = 5;
+    // አዲሱ የዋጋ ማሰቢያ ስልተ-ቀመር
+    function calculatePrice() {
+      const qty = parseFloat(document.getElementById('calcQty').value) || 0;
+      const type = document.getElementById('calcType').value;
+      let unitPrice = 0;
 
-      if (type === 'black') {
-        pricePerPage = pages > 100 ? 3.5 : (pages > 20 ? 4 : 5);
-      } else if (type === 'black_double') {
-        pricePerPage = pages > 100 ? 5 : 6;
-      } else if (type === 'color') {
-        pricePerPage = pages > 20 ? 15 : 20;
+      switch(type) {
+        case 'copy_single': unitPrice = 4; break;
+        case 'copy_double': unitPrice = 8; break;
+        case 'print': unitPrice = 5; break;
+        case 'blank_paper': unitPrice = 2.50; break;
+        case 'binding': unitPrice = 35; break;
+        case 'laminate': unitPrice = 15; break;
       }
 
-      const total = pages * pricePerPage;
-      document.getElementById('calculatedPrice').innerText = total + " ብር (" + pricePerPage + " ብር/ገጽ)";
+      const total = qty * unitPrice;
+      document.getElementById('calculatedPrice').innerText = total + " ብር (" + unitPrice + " ብር/አንድ)";
+      return { total, type, qty };
+    }
+
+    function transferCalcToSales() {
+      const calc = calculatePrice();
+      document.getElementById('salesAmount').value = calc.total;
+      document.getElementById('salesDesc').value = calc.qty + " ብዛት - " + document.getElementById('calcType').selectedOptions[0].text;
+      
+      // ወደ ሽያጭ Tab መቀየር
+      switchTab('sales', { target: document.querySelectorAll('.tab-btn')[0] });
     }
 
     function fetchDashboard() {
@@ -187,7 +206,7 @@
         .then(res => res.json())
         .then(data => {
           document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
-          document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብrm";
+          document.getElementById('todayExpense').innerText = (data.todayExpense || 0) + " ብር";
           document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
         })
         .catch(err => console.error(err));
