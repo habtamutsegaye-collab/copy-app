@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>የሶሻል ኮሚቴ Enterprise AI ኮፒ ቤት</title>
+  <title>የሶሻል ኮሚቴ 50-Feature Enterprise AI ኮፒ ቤት</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2563eb">
   <style>
@@ -15,25 +15,25 @@
       --bg-color: #111827; --card-bg: #1f2937; --text-color: #f9fafb; --border-color: #374151;
     }
     * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    h1 { font-size: 1rem; margin: 0; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 15px; }
-    .card { background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; }
-    .card h3 { margin: 0; font-size: 0.75rem; opacity: 0.8; }
-    .card p { margin: 6px 0 0; font-size: 1rem; font-weight: bold; color: var(--primary-color); }
-    .nav-tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
-    .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 0.85rem; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 12px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    h1 { font-size: 0.95rem; margin: 0; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; margin-bottom: 12px; }
+    .card { background: var(--card-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; }
+    .card h3 { margin: 0; font-size: 0.7rem; opacity: 0.8; }
+    .card p { margin: 5px 0 0; font-size: 0.95rem; font-weight: bold; color: var(--primary-color); }
+    .nav-tabs { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
+    .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 7px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 0.8rem; }
     .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-    .tab-content { display: none; background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .tab-content { display: none; background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); }
     .tab-content.active { display: block; }
-    .form-group { display: flex; flex-direction: column; gap: 8px; }
-    input, select, button, textarea { padding: 9px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.95rem; background: var(--bg-color); color: var(--text-color); }
-    button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 8px; }
-    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
-    .ai-box { background: rgba(37, 99, 235, 0.08); border: 1px dashed var(--primary-color); padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    input, select, button, textarea { padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.9rem; background: var(--bg-color); color: var(--text-color); }
+    button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 6px; }
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 7px; border-bottom: 1px solid var(--border-color); font-size: 0.8rem; }
+    .ai-box { background: rgba(37, 99, 235, 0.08); border: 1px dashed var(--primary-color); padding: 9px; border-radius: 6px; margin-bottom: 10px; font-size: 0.8rem; }
     #loginOverlay { display: flex; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: var(--bg-color); justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
-    #loginBox { background: var(--card-bg); padding: 20px; border-radius: 10px; width: 100%; max-width: 320px; border: 1px solid var(--border-color); text-align: center; }
+    #loginBox { background: var(--card-bg); padding: 20px; border-radius: 10px; width: 100%; max-width: 300px; border: 1px solid var(--border-color); text-align: center; }
   </style>
 </head>
 <body>
@@ -41,7 +41,7 @@
   <!-- Enterprise Login Overlay -->
   <div id="loginOverlay">
     <div id="loginBox">
-      <h2 style="margin-top:0;">🌐 Enterprise AI Login</h2>
+      <h2 style="margin-top:0;">🌐 50-Feature AI Login</h2>
       <div class="form-group">
         <select id="loginRoleSelect">
           <option value="staff">ኮፒ ቤት ሰራተኛ</option>
@@ -52,18 +52,18 @@
         <input type="password" id="loginPass" placeholder="የይለፍ ቃል (1234)">
         <button type="button" class="submit-btn" onclick="doLogin()">ግባ</button>
       </div>
-      <p id="loginError" style="color: var(--danger-color); margin-top: 10px; font-size: 0.85rem; font-weight: bold;"></p>
+      <p id="loginError" style="color: var(--danger-color); margin-top: 10px; font-size: 0.8rem; font-weight: bold;"></p>
     </div>
   </div>
 
   <header>
     <div>
-      <h1>🌐 Enterprise AI ኮፒ ቤት</h1>
+      <h1>🌐 50-Feature Enterprise AI ኮፒ ቤት</h1>
       <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
     </div>
     <div>
-      <button onclick="document.body.toggleAttribute('data-theme')" style="padding:6px 10px; border-radius:6px; cursor:pointer;">🌙/☀️</button>
-      <button onclick="doLogout()" style="background:var(--danger-color); color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">ውጣ</button>
+      <button onclick="document.body.toggleAttribute('data-theme')" style="padding:5px 8px; border-radius:6px; cursor:pointer;">🌙/☀️</button>
+      <button onclick="doLogout()" style="background:var(--danger-color); color:white; border:none; padding:5px 8px; border-radius:6px; cursor:pointer;">ውጣ</button>
     </div>
   </header>
 
@@ -76,6 +76,7 @@
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 AI ሽያጭ</button>
+    <button class="tab-btn" onclick="switchTab('voiceNav', event)">🎙️ ድምጽ ረዳት</button>
     <button class="tab-btn" onclick="switchTab('auditorHub', event)">🕵️ የኦዲተር ፓነል</button>
     <button class="tab-btn" onclick="switchTab('chairpersonHub', event)">⚡ የሰብሳቢ ፓነል</button>
     <button class="tab-btn" onclick="switchTab('machineHealth', event)">🖨️ የማሽን ጤንነት</button>
@@ -86,7 +87,7 @@
 
   <!-- Tab 1: Sales -->
   <div id="sales" class="tab-content active">
-    <h3>አዲስ Enterprise ሽያጭ መመዝገቢያ</h3>
+    <h3>አዲስ 50-Feature ሽያጭ መመዝገቢያ</h3>
     <div class="form-group">
       <select id="salesType">
         <option value="copy">ኮፒ (Copy)</option>
@@ -108,12 +109,21 @@
     <div id="salesMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- Tab 2: Auditor Private Panel -->
+  <!-- Tab 2: Voice Command Assistant (New) -->
+  <div id="voiceNav" class="tab-content">
+    <h3>🎙️ AI የድምጽ ትዕዛዝ ረዳት (Voice Command)</h3>
+    <div class="ai-box">
+      <strong>🤖 ድምጽ ማስተዋወቂያ፡</strong> ማይክሮፎኑን በመጫን ትዕዛዝዎን ይናገሩ (ለምሳሌ፦ *"ሽያጭ"*፣ *"ዱቤ"* ወይም *"ስቶክ"*)።
+    </div>
+    <div class="form-group">
+      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="startVoiceRecognition()">🎤 ማይክሮፎን ክፈት እና ተናገር</button>
+      <p id="voiceResultText" style="font-style: italic; margin-top: 10px; text-align: center;"></p>
+    </div>
+  </div>
+
+  <!-- Tab 3: Auditor Private Panel -->
   <div id="auditorHub" class="tab-content">
     <h3>🕵️ የኦዲተር ሚስጥራዊ ፓነል (Auditor Dashboard)</h3>
-    <div class="ai-box">
-      <strong>🔒 ሚስጥራዊ ማስታወሻ፡</strong> እዚህ የሚመዘገቡት ማስታወሻዎች ለኦዲተሩ እና ለኮሚቴው ሰብሳቢ ብቻ የሚታዩ ናቸው።
-    </div>
     <div class="form-group">
       <textarea id="auditorNoteText" rows="3" placeholder="የቁጥጥር ወይም የጥርጣሬ ማስታወሻ ይጻፉ..."></textarea>
       <select id="auditorRiskLevel">
@@ -128,20 +138,17 @@
     <div id="auditorNotesList"></div>
   </div>
 
-  <!-- Tab 3: Chairperson Override Panel -->
+  <!-- Tab 4: Chairperson Override Panel -->
   <div id="chairpersonHub" class="tab-content">
     <h3>⚡ የሰብሳቢ ልዩ ውሳኔ ፓነል (Chairperson Override)</h3>
-    <div class="ai-box">
-      <strong>⚠️ የሰብሳቢ መብት፡</strong> ሰብሳቢው በልዩ ሁኔታዎች የፋይናንስ ወይም የሲስተም ውሳኔዎችን የሚያጽድቅበት ገጽ።
-    </div>
     <div class="form-group">
-      <input type="text" id="overrideAction" placeholder="የውሳኔው አይነት (ምሳሌ፡ ልዩ በጀት ማጽደቅ)">
+      <input type="text" id="overrideAction" placeholder="የውሳኔው አይነት">
       <textarea id="overrideReason" rows="2" placeholder="የውሳኔው ምክንያት..."></textarea>
       <button type="button" class="submit-btn" style="background:var(--danger-color);" onclick="submitChairpersonOverride()">ልዩ ውሳኔ አጽድቅ (Override)</button>
     </div>
   </div>
 
-  <!-- Tab 4: Machine Acoustic & Health Monitor -->
+  <!-- Tab 5: Machine Acoustic & Health Monitor -->
   <div id="machineHealth" class="tab-content">
     <h3>🖨️ የማሽን ጤንነት እና የድምጽ ጥገና (Acoustic & Health)</h3>
     <div class="form-group">
@@ -157,7 +164,7 @@
     </div>
   </div>
 
-  <!-- Tab 5: Biometric HR Clock -->
+  <!-- Tab 6: Biometric HR Clock -->
   <div id="hrBio" class="tab-content">
     <h3>⏱️ የሰራተኛ ባዮሜትሪክ መቆጣጠሪያ (Face & Geofence)</h3>
     <div class="form-group">
@@ -167,7 +174,7 @@
     <div id="hrBioMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- Tab 6: Credit Risk Scoring -->
+  <!-- Tab 7: Credit Risk Scoring -->
   <div id="credit" class="tab-content">
     <h3>የዱቤ መከታተያ (AI Credit Risk)</h3>
     <div class="form-group">
@@ -183,7 +190,7 @@
     <div id="creditList"></div>
   </div>
 
-  <!-- Tab 7: Smart Stock PO -->
+  <!-- Tab 8: Smart Stock PO -->
   <div id="stock" class="tab-content">
     <h3>የእቃ ስቶክ እና አውቶማቲክ PO</h3>
     <div class="form-group">
@@ -197,13 +204,13 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCXLIUWgplL73gXmQSBcW5CA86aNU4QOSkp2oSLWRPRV9HQ1d9_Sz4AdfYTK5qdon0/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpIV24KqmziCalAeUSiOzC5lkztilWZYAxQ8P0SLyjM5jRNhiCr5pqXi4NDPHS9ZvB/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
 
-    // Service Worker Registration
+    // Service Worker Registration for PWA Offline Support
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed:', err));
       });
     }
 
@@ -225,6 +232,32 @@
       document.getElementById(t).classList.add('active'); e.target.classList.add('active');
     }
 
+    // Voice Command AI feature
+    function startVoiceRecognition() {
+      const txt = document.getElementById('voiceResultText');
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        txt.innerText = "❌ ብራውዘርዎ የድምጽ ትዕዛዝ አይደግፍም።";
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'am-ET';
+      txt.innerText = "🎙️ እያዳመጥኩ ነው... ይናገሩ!";
+      recognition.onresult = function(event) {
+        const speechToText = event.results[0][0].transcript;
+        txt.innerText = "🗣️ የተባለው: \"" + speechToText + "\"";
+        if(speechToText.includes("ሽያጭ") || speechToText.includes("ገቢ")) {
+          switchTab('sales', { target: document.querySelector('.tab-btn') });
+        } else if(speechToText.includes("ዱቤ")) {
+          switchTab('credit', { target: document.querySelectorAll('.tab-btn')[6] });
+        } else if(speechToText.includes("ስቶክ")) {
+          switchTab('stock', { target: document.querySelectorAll('.tab-btn')[7] });
+        }
+      };
+      recognition.onerror = function() { txt.innerText = "❌ የድምጽ ስህተት አጋጥሟል። በድጋሚ ይሞክሩ።"; };
+      recognition.start();
+    }
+
     function fetchDashboard() {
       if(!SCRIPT_URL || SCRIPT_URL.includes("እዚህ_ላይ")) return;
       fetch(SCRIPT_URL).then(res => res.json()).then(data => {
@@ -242,7 +275,7 @@
       sendData({
         action: "addSales",
         type: document.getElementById('salesType').value,
-        desc: document.getElementById('salesDesc').value || "Enterprise Sales",
+        desc: document.getElementById('salesDesc').value || "50-Feature Sales",
         amount: document.getElementById('salesAmount').value,
         cost: document.getElementById('salesCost').value || 0,
         paymentMethod: document.getElementById('paymentMethod').value,
