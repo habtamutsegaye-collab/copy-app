@@ -198,6 +198,15 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCXLIUWgplL73gXmQSBcW5CA86aNU4QOSkp2oSLWRPRV9HQ1d9_Sz4AdfYTK5qdon0/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => { console.log('Service Worker registered!', reg); })
+        .catch((err) => { console.log('Service Worker failed', err); });
+    });
+  }
+</script>
 
     function doLogin() {
       if(document.getElementById('loginPass').value.trim() === "1234") {
