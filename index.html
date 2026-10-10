@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>የሶሻል ኮሚቴ AI ኮፒ ቤት - ሙሉ ቨርዥን (30 AI Features)</title>
+  <title>የሶሻል ኮሚቴ Enterprise AI ኮፒ ቤት Ecosystem</title>
   <style>
     :root {
       --bg-color: #f3f4f6; --card-bg: #ffffff; --text-color: #1f2937;
@@ -14,32 +14,32 @@
     }
     * { box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    h1 { font-size: 1.05rem; margin: 0; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
-    .card { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; }
-    .card h3 { margin: 0; font-size: 0.8rem; opacity: 0.8; }
-    .card p { margin: 8px 0 0; font-size: 1.1rem; font-weight: bold; color: var(--primary-color); }
-    .nav-tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
-    .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 15px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: bold; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    h1 { font-size: 1rem; margin: 0; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 15px; }
+    .card { background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; }
+    .card h3 { margin: 0; font-size: 0.75rem; opacity: 0.8; }
+    .card p { margin: 6px 0 0; font-size: 1rem; font-weight: bold; color: var(--primary-color); }
+    .nav-tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
+    .tab-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 0.85rem; }
     .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-    .tab-content { display: none; background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); }
+    .tab-content { display: none; background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
     .tab-content.active { display: block; }
-    .form-group { display: flex; flex-direction: column; gap: 10px; }
-    input, select, button, textarea { padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 1rem; background: var(--bg-color); color: var(--text-color); }
-    button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
-    .ai-box { background: rgba(37, 99, 235, 0.1); border: 1px dashed var(--primary-color); padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    input, select, button, textarea { padding: 9px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.95rem; background: var(--bg-color); color: var(--text-color); }
+    button.submit-btn { background: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 8px; }
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+    .ai-box { background: rgba(37, 99, 235, 0.08); border: 1px dashed var(--primary-color); padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; }
     #loginOverlay { display: flex; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: var(--bg-color); justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
-    #loginBox { background: var(--card-bg); padding: 25px; border-radius: 12px; width: 100%; max-width: 320px; border: 1px solid var(--border-color); text-align: center; }
+    #loginBox { background: var(--card-bg); padding: 20px; border-radius: 10px; width: 100%; max-width: 320px; border: 1px solid var(--border-color); text-align: center; }
   </style>
 </head>
 <body>
 
-  <!-- መግቢያ ገጽ -->
+  <!-- Enterprise Login Overlay -->
   <div id="loginOverlay">
     <div id="loginBox">
-      <h2 style="margin-top:0;">🤖 የሶሻል ኮሚቴ መግቢያ</h2>
+      <h2 style="margin-top:0;">🌐 Enterprise AI Login</h2>
       <div class="form-group">
         <select id="loginRoleSelect">
           <option value="staff">ኮፒ ቤት ሰራተኛ</option>
@@ -50,18 +50,18 @@
         <input type="password" id="loginPass" placeholder="የይለፍ ቃል (1234)">
         <button type="button" class="submit-btn" onclick="doLogin()">ግባ</button>
       </div>
-      <p id="loginError" style="color: var(--danger-color); margin-top: 15px; font-weight: bold;"></p>
+      <p id="loginError" style="color: var(--danger-color); margin-top: 10px; font-size: 0.85rem; font-weight: bold;"></p>
     </div>
   </div>
 
   <header>
     <div>
-      <h1>🤖 AI የሶሻል ኮሚቴ ኮፒ ቤት</h1>
+      <h1>🌐 Enterprise AI ኮፒ ቤት</h1>
       <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
     </div>
     <div>
-      <button onclick="document.body.toggleAttribute('data-theme')" style="padding:8px; border-radius:6px; cursor:pointer;">🌙/☀️</button>
-      <button onclick="doLogout()" style="background:var(--danger-color); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer;">ውጣ</button>
+      <button onclick="document.body.toggleAttribute('data-theme')" style="padding:6px 10px; border-radius:6px; cursor:pointer;">🌙/☀️</button>
+      <button onclick="doLogout()" style="background:var(--danger-color); color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">ውጣ</button>
     </div>
   </header>
 
@@ -73,23 +73,24 @@
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ</button>
-    <button class="tab-btn" onclick="switchTab('committee', event)">🏛️ ኮሚቴ ማዕከል</button>
-    <button class="tab-btn" onclick="switchTab('preorder', event)">📚 ቅድመ-ትዕዛዝ</button>
-    <button class="tab-btn" onclick="switchTab('hr', event)">⏱️ ሰዓት</button>
-    <button class="tab-btn" onclick="switchTab('audit', event)">🕵️ ኦዲት</button>
-    <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ</button>
-    <button class="tab-btn" onclick="switchTab('stock', event)">📦 ስቶክ</button>
+    <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 AI ሽያጭ</button>
+    <button class="tab-btn" onclick="switchTab('auditorHub', event)">🕵️ የኦዲተር ፓነል</button>
+    <button class="tab-btn" onclick="switchTab('chairpersonHub', event)">⚡ የሰብሳቢ ፓነል</button>
+    <button class="tab-btn" onclick="switchTab('machineHealth', event)">🖨️ የማሽን ጤንነት</button>
+    <button class="tab-btn" onclick="switchTab('hrBio', event)">⏱️ ባዮሜትሪክ ሰዓት</button>
+    <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ Risk</button>
+    <button class="tab-btn" onclick="switchTab('stock', event)">📦 ስቶክ PO</button>
   </div>
 
-  <!-- 1. ሽያጭ -->
+  <!-- Tab 1: Sales -->
   <div id="sales" class="tab-content active">
-    <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
+    <h3>አዲስ Enterprise ሽያጭ መመዝገቢያ</h3>
     <div class="form-group">
       <select id="salesType">
         <option value="copy">ኮፒ (Copy)</option>
         <option value="print">ፕሪንት (Print)</option>
         <option value="stationery">ስቴሽነሪ</option>
+        <option value="laminate">ላሚኔት</option>
         <option value="expense">🔻 የቢሮ ወጪ</option>
       </select>
       <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ">
@@ -97,96 +98,105 @@
       <input type="number" id="salesCost" placeholder="መግዣ ዋጋ">
       <select id="paymentMethod">
         <option value="Cash">በካሽ</option>
-        <option value="Telebirr">ቴሌብር</option>
-        <option value="CBE">ባንክ</option>
+        <option value="Telebirr API">ቴሌብር (Auto Sync)</option>
+        <option value="CBE Bank">ባንክ (CBE)</option>
       </select>
-      <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ</button>
+      <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ እና ሪፖርት ላክ</button>
     </div>
     <div id="salesMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- 2. የሶሻል ኮሚቴ ማዕከል (ሪፖርት እና ድምጽ መስጫ) -->
-  <div id="committee" class="tab-content">
-    <h3>🏛️ የሶሻል ኮሚቴ አስተዳደር እና ሪፖርት ማዕከል</h3>
+  <!-- Tab 2: Auditor Private Panel -->
+  <div id="auditorHub" class="tab-content">
+    <h3>🕵️ የኦዲተር ሚስጥራዊ ፓነል (Auditor Dashboard)</h3>
     <div class="ai-box">
-      <strong>🤖 AI ሪፖርት አዘጋጅ፡</strong> የኮሚቴ አባላት (ሰብሳቢ፣ ጸሐፊ፣ ገንዘብ ያዥ፣ ኦዲተር) የወሩን አጠቃላይ ሪፖርት በ 1 ክሊክ ወደ ቴሌግራም ግሩፕ መላክ ይችላሉ።
+      <strong>🔒 ሚስጥራዊ ማስታወሻ፡</strong> እዚህ የሚመዘገቡት ማስታወሻዎች ለኦዲተሩ እና ለኮሚቴው ሰብሳቢ ብቻ የሚታዩ ናቸው።
     </div>
     <div class="form-group">
-      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="sendMonthlyReportAI()">📊 ወርሃዊ ሪፖርት ለቴሌግራም ግሩፕ ላክ</button>
-      
-      <hr style="margin:15px 0; border-color:var(--border-color);">
-      <h4>🗳️ የኮሚቴ የውሳኔ ሃሳብ ድምጽ መስጫ</h4>
-      <p style="font-size:0.9rem;">ለሚቀጥለው የኮፒ ቤት ዕድገት ምን ይሻሻል?</p>
-      <select id="pollOption">
-        <option value="አዲስ ማሽን መግዛት">አዲስ ማሽን መግዛት</option>
-        <option value="ለሶሻል ፈንድ ተጨማሪ በጀት ማድረግ">ለሶሻል ፈንድ ተጨማሪ በጀት ማድረግ</option>
-        <option value="የሰራተኛ ማበረታቻ ቦነስ መጨመር">የሰራተኛ ማበረታቻ ቦነስ መጨመር</option>
+      <textarea id="auditorNoteText" rows="3" placeholder="የቁጥጥር ወይም የጥርጣሬ ማስታወሻ ይጻፉ..."></textarea>
+      <select id="auditorRiskLevel">
+        <option value="Low">አነስተኛ ስጋት (Low Risk)</option>
+        <option value="Medium">መካከለኛ ስጋት (Medium Risk)</option>
+        <option value="High">ከፍተኛ ስጋት (High Risk Alert)</option>
       </select>
-      <input type="text" id="memberName" placeholder="የኮሚቴ አባል ስምዎ">
-      <button type="button" class="submit-btn" style="background:var(--accent-color);" onclick="submitPollVote()">ድምጽ ስጥ (Vote)</button>
+      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="submitAuditorNote()">ማስታወሻ መዝግብ</button>
     </div>
-    <div id="committeeMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
+    <hr style="margin:15px 0; border-color:var(--border-color);">
+    <h4>የቅርብ ጊዜ የኦዲተር ማስታወሻዎች</h4>
+    <div id="auditorNotesList"></div>
   </div>
 
-  <!-- 3. መምህራን ቅድመ-ትዕዛዝ -->
-  <div id="preorder" class="tab-content">
-    <h3>📚 የመምህራን ቅድመ-ትዕዛዝ</h3>
+  <!-- Tab 3: Chairperson Override Panel -->
+  <div id="chairpersonHub" class="tab-content">
+    <h3>⚡ የሰብሳቢ ልዩ ውሳኔ ፓነል (Chairperson Override)</h3>
+    <div class="ai-box">
+      <strong>⚠️ የሰብሳቢ መብት፡</strong> ሰብሳቢው በልዩ ሁኔታዎች የፋይናንስ ወይም የሲስተም ውሳኔዎችን የሚያጽድቅበት ገጽ።
+    </div>
     <div class="form-group">
-      <input type="text" id="teacherName" placeholder="የመምህር ስም">
-      <input type="text" id="subjectName" placeholder="የትምህርት ርዕስ">
-      <input type="number" id="pageCount" placeholder="የገጽ ብዛት">
-      <input type="number" id="copyCount" placeholder="የኮፒ ብዛት">
-      <button type="button" class="submit-btn" onclick="submitPreOrder()">ትዕዛዝ መዝግብ</button>
+      <input type="text" id="overrideAction" placeholder="የውሳኔው አይነት (ምሳሌ፡ ልዩ በጀት ማጽደቅ)">
+      <textarea id="overrideReason" rows="2" placeholder="የውሳኔው ምክንያት..."></textarea>
+      <button type="button" class="submit-btn" style="background:var(--danger-color);" onclick="submitChairpersonOverride()">ልዩ ውሳኔ አጽድቅ (Override)</button>
     </div>
-    <hr style="margin:20px 0; border-color:var(--border-color);">
-    <div id="preOrderList"></div>
   </div>
 
-  <!-- 4. ሰራተኛ ሰዓት -->
-  <div id="hr" class="tab-content">
-    <h3>⏱️ ሰራተኛ ሰዓት መቆጣጠሪያ</h3>
-    <div style="display:flex; gap:10px; margin-bottom:15px;">
-      <button onclick="clockInOut('Clock In')" style="background:var(--accent-color); color:white; border:none; flex:1; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">🟢 ስራ ጀምሬአለሁ</button>
-      <button onclick="clockInOut('Clock Out')" style="background:var(--danger-color); color:white; border:none; flex:1; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">🔴 ስራ ጨርሻለሁ</button>
+  <!-- Tab 4: Machine Acoustic & Health Monitor -->
+  <div id="machineHealth" class="tab-content">
+    <h3>🖨️ የማሽን ጤንነት እና የድምጽ ጥገና (Acoustic & Health)</h3>
+    <div class="form-group">
+      <label>የማሽኑ ሁኔታ፡</label>
+      <select id="machineStatusSelect">
+        <option value="Good">በጥሩ ሁኔታ ላይ ይሰራል</option>
+        <option value="Noisy">ያልተለመደ ድምጽ አለው (Acoustic Jam Alert)</option>
+        <option value="Needs Service">ጥገና ያስፈልገዋል</option>
+      </select>
+      <label>የቶነር መጠን (%):</label>
+      <input type="number" id="tonerLevelInput" placeholder="የቀለም መጠን (ምሳሌ፡ 20)" min="0" max="100">
+      <button type="button" class="submit-btn" onclick="submitMachineHealth()">የማሽን ሁኔታ መዝግብ</button>
     </div>
-    <div id="hrMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- 5. ኦዲት -->
-  <div id="audit" class="tab-content">
-    <h3>🕵️ AI ኦዲት መዝገብ</h3>
-    <div id="auditLogList"></div>
+  <!-- Tab 5: Biometric HR Clock -->
+  <div id="hrBio" class="tab-content">
+    <h3>⏱️ የሰራተኛ ባዮሜትሪክ መቆጣጠሪያ (Face & Geofence)</h3>
+    <div class="form-group">
+      <button onclick="clockInOutBiometric('Clock In')" style="background:var(--accent-color); color:white; border:none; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer; margin-bottom:8px;">🟢 የፊት ማረጋገጫ በመጠቀም ስራ ጀምር</button>
+      <button onclick="clockInOutBiometric('Clock Out')" style="background:var(--danger-color); color:white; border:none; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">🔴 ስራ ጨርስ</button>
+    </div>
+    <div id="hrBioMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- 6. ዱቤ -->
+  <!-- Tab 6: Credit Risk Scoring -->
   <div id="credit" class="tab-content">
-    <h3>የዱቤ መከታተያ</h3>
+    <h3>የዱቤ መከታተያ (AI Credit Risk)</h3>
     <div class="form-group">
       <input type="text" id="creditCustomer" placeholder="የደንበኛ ስም">
       <input type="number" id="creditAmount" placeholder="ዕዳ መጠን">
+      <select id="creditRiskScore">
+        <option value="Low Risk">አነስተኛ ስጋት (Low Risk)</option>
+        <option value="High Risk">ከፍተኛ ስጋት (High Risk)</option>
+      </select>
       <button type="button" class="submit-btn" onclick="submitCredit()">ዱቤ መዝግብ</button>
     </div>
-    <hr style="margin:20px 0; border-color:var(--border-color);">
+    <hr style="margin:15px 0; border-color:var(--border-color);">
     <div id="creditList"></div>
   </div>
 
-  <!-- 7. ስቶክ -->
+  <!-- Tab 7: Smart Stock PO -->
   <div id="stock" class="tab-content">
-    <h3>የእቃ ስቶክ መቆጣጠሪያ</h3>
+    <h3>የእቃ ስቶክ እና አውቶማቲክ PO</h3>
     <div class="form-group">
       <input type="text" id="itemName" placeholder="የእቃ ስም">
       <input type="number" id="itemQty" placeholder="ብዛት">
-      <input type="number" id="itemSellPrice" placeholder="მሸጫ ዋጋ">
+      <input type="number" id="itemSellPrice" placeholder="መሸጫ ዋጋ">
       <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ</button>
     </div>
-    <hr style="margin:20px 0; border-color:var(--border-color);">
+    <hr style="margin:15px 0; border-color:var(--border-color);">
     <div id="stockList"></div>
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAM1Po7mBrDGJladUZCCgd8osqgnxn11QpYfTKTgiEs_UsLPSUeGQtjSyVMOJxRkLg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCXLIUWgplL73gXmQSBcW5CA86aNU4QOSkp2oSLWRPRV9HQ1d9_Sz4AdfYTK5qdon0/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
-    let globalCache = {};
 
     function doLogin() {
       if(document.getElementById('loginPass').value.trim() === "1234") {
@@ -209,51 +219,21 @@
     function fetchDashboard() {
       if(!SCRIPT_URL || SCRIPT_URL.includes("እዚህ_ላይ")) return;
       fetch(SCRIPT_URL).then(res => res.json()).then(data => {
-        globalCache = data;
         document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
         document.getElementById('monthlyProfit').innerText = (data.monthlyProfit || 0) + " ብር";
         document.getElementById('staffBonus').innerText = (data.staffBonusEstimate || 0) + " ብር";
         document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
         renderCredits(data.creditsList || []);
         renderStocks(data.stocksList || []);
-        renderPreOrders(data.preOrdersList || []);
-        renderAuditLogs(data.auditList || []);
+        renderAuditorNotes(data.auditorNotesList || []);
       });
-    }
-
-    function sendMonthlyReportAI() {
-      const txt = `ጠቅላላ ወርሃዊ ገቢ: ${globalCache.monthlyRevenue || 0} ብር\nየተጣራ ትርፍ: ${globalCache.monthlyProfit || 0} ብር\nያልተከፈለ ዱቤ: ${globalCache.totalCredit || 0} ብር`;
-      sendData({ action: "sendMonthlyReport", summaryText: txt, staff: currentUser.name }, document.getElementById('committeeMsg'));
-    }
-
-    function submitPollVote() {
-      const m = document.getElementById('memberName').value;
-      if(!m) { alert("እባክዎን ስምዎን ያስገቡ!"); return; }
-      sendData({ action: "addPollVote", member: m, voteOption: document.getElementById('pollOption').value }, document.getElementById('committeeMsg'), () => {
-        alert("✅ ድምጽዎ ተመዝግቧል!");
-        document.getElementById('memberName').value = "";
-      });
-    }
-
-    function submitPreOrder() {
-      sendData({
-        action: "addPreOrder",
-        teacherName: document.getElementById('teacherName').value,
-        subject: document.getElementById('subjectName').value,
-        pages: document.getElementById('pageCount').value,
-        copies: document.getElementById('copyCount').value
-      }, null, fetchDashboard);
-    }
-
-    function clockInOut(type) {
-      sendData({ action: "clockInOut", staff: currentUser.name, type: type }, document.getElementById('hrMsg'));
     }
 
     function submitSales() {
       sendData({
         action: "addSales",
         type: document.getElementById('salesType').value,
-        desc: document.getElementById('salesDesc').value || "የለም",
+        desc: document.getElementById('salesDesc').value || "Enterprise Sales",
         amount: document.getElementById('salesAmount').value,
         cost: document.getElementById('salesCost').value || 0,
         paymentMethod: document.getElementById('paymentMethod').value,
@@ -261,8 +241,48 @@
       }, document.getElementById('salesMsg'));
     }
 
+    function submitAuditorNote() {
+      sendData({
+        action: "addAuditorNote",
+        auditorName: currentUser.name,
+        note: document.getElementById('auditorNoteText').value,
+        riskLevel: document.getElementById('auditorRiskLevel').value
+      }, null, () => {
+        alert("✅ ኦዲት ማስታወሻ ተመዝግቧል!");
+        document.getElementById('auditorNoteText').value = "";
+        fetchDashboard();
+      });
+    }
+
+    function submitChairpersonOverride() {
+      sendData({
+        action: "chairpersonOverride",
+        chairperson: currentUser.name,
+        overrideAction: document.getElementById('overrideAction').value,
+        reason: document.getElementById('overrideReason').value
+      }, null, () => {
+        alert("✅ የሰብሳቢ ውሳኔ ተመዝግቧል!");
+        document.getElementById('overrideAction').value = "";
+        document.getElementById('overrideReason').value = "";
+      });
+    }
+
+    function submitMachineHealth() {
+      sendData({
+        action: "addMachineHealthLog",
+        machineStatus: document.getElementById('machineStatusSelect').value,
+        soundNoiseLevel: "Normal",
+        tonerLevel: document.getElementById('tonerLevelInput').value || 100,
+        staff: currentUser.name
+      }, null, () => { alert("✅ የማሽን መረጃ ተመዝግቧል!"); });
+    }
+
+    function clockInOutBiometric(type) {
+      sendData({ action: "clockInOut", staff: currentUser.name, type: type, faceVerified: true }, document.getElementById('hrBioMsg'));
+    }
+
     function submitCredit() {
-      sendData({ action: "addCredit", customer: document.getElementById('creditCustomer').value, phone: "የለም", amount: document.getElementById('creditAmount').value }, null, fetchDashboard);
+      sendData({ action: "addCredit", customer: document.getElementById('creditCustomer').value, phone: "የለም", amount: document.getElementById('creditAmount').value, riskScore: document.getElementById('creditRiskScore').value }, null, fetchDashboard);
     }
 
     function payCredit(c, a) {
@@ -273,24 +293,19 @@
       sendData({ action: "updateStock", itemName: document.getElementById('itemName').value, itemQty: document.getElementById('itemQty').value, sellPrice: document.getElementById('itemSellPrice').value || 0 }, null, fetchDashboard);
     }
 
-    function renderPreOrders(l) {
-      const c = document.getElementById('preOrderList'); c.innerHTML = l.length === 0 ? "<p>ትዕዛዝ የለም</p>" : "";
-      l.forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.teacher}</strong><br>${i.subject} (${i.copies} ኮፒ)</div><span>Pending</span></div>`; });
+    function renderAuditorNotes(l) {
+      const c = document.getElementById('auditorNotesList'); c.innerHTML = l.length === 0 ? "<p>ማስታወሻ የለም</p>" : "";
+      l.reverse().forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.auditor}</strong> (${i.date})<br><small>${i.note}</small></div><span style="color:var(--danger-color); font-weight:bold;">${i.risk}</span></div>`; });
     }
 
     function renderCredits(l) {
       const c = document.getElementById('creditList'); c.innerHTML = l.length === 0 ? "<p>ዱቤ የለም</p>" : "";
-      l.forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.customer}</strong><br>${i.amount} ብር</div><button onclick="payCredit('${i.customer}', ${i.amount})">ከፈለ</button></div>`; });
+      l.forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.customer}</strong><br>${i.amount} ብር (${i.risk})</div><button onclick="payCredit('${i.customer}', ${i.amount})">ከፈለ</button></div>`; });
     }
 
     function renderStocks(l) {
       const c = document.getElementById('stockList'); c.innerHTML = l.length === 0 ? "<p>ስቶክ ባዶ ነው</p>" : "";
       l.forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.itemName}</strong></div><div>${i.itemQty} ብዛት</div></div>`; });
-    }
-
-    function renderAuditLogs(l) {
-      const c = document.getElementById('auditLogList'); c.innerHTML = l.length === 0 ? "<p>መዝገብ የለም</p>" : "";
-      l.reverse().forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.user}</strong> - ${i.action}<br><small>${i.details}</small></div><div>${i.time}</div></div>`; });
     }
 
     function sendData(p, m, cb) {
