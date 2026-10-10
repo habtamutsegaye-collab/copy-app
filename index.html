@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>የሶሻል ኮሚቴ ኮፒ ቤት</title>
+  <title>ኢ.ክ.መሰናዶ Enterprise AI ኮፒ ቤት</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2563eb">
   <style>
@@ -38,10 +38,11 @@
 </head>
 <body>
 
-  <!-- ኮፒ ቤት Login Overlay -->
+  <!-- Enterprise Login Overlay -->
   <div id="loginOverlay">
     <div id="loginBox">
-      <h2 style="margin-top:0;">🏫 የኮፒ ቤት መግቢያ</h2>
+      <img src="./logo.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid var(--primary-color);">
+      <h2 style="margin-top:0; font-size: 1.1rem;">ኢ.ክ.መሰናዶ ኮፒ ቤት</h2>
       <div class="form-group">
         <select id="loginRoleSelect">
           <option value="staff">ኮፒ ቤት ሰራተኛ</option>
@@ -57,9 +58,12 @@
   </div>
 
   <header>
-    <div>
-      <h1>🌐 50-Feature Enterprise AI ኮፒ ቤት</h1>
-      <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <img src="./logo.png" alt="Logo" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary-color);">
+      <div>
+        <h1>ኢ.ክ.መሰናዶ ኮፒ ማዕከል</h1>
+        <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
+      </div>
     </div>
     <div>
       <button onclick="document.body.toggleAttribute('data-theme')" style="padding:5px 8px; border-radius:6px; cursor:pointer;">🌙/☀️</button>
@@ -87,7 +91,7 @@
 
   <!-- Tab 1: Sales -->
   <div id="sales" class="tab-content active">
-    <h3>አዲስ 50-Feature ሽያጭ መመዝገቢያ</h3>
+    <h3>አዲስ ሽያጭ መመዝገቢያ</h3>
     <div class="form-group">
       <select id="salesType">
         <option value="copy">ኮፒ (Copy)</option>
@@ -109,7 +113,7 @@
     <div id="salesMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- Tab 2: Voice Command Assistant (New) -->
+  <!-- Tab 2: Voice Command Assistant -->
   <div id="voiceNav" class="tab-content">
     <h3>🎙️ AI የድምጽ ትዕዛዝ ረዳት (Voice Command)</h3>
     <div class="ai-box">
@@ -207,7 +211,6 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpIV24KqmziCalAeUSiOzC5lkztilWZYAxQ8P0SLyjM5jRNhiCr5pqXi4NDPHS9ZvB/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
 
-    // Service Worker Registration for PWA Offline Support
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed:', err));
@@ -225,14 +228,18 @@
         document.getElementById('loginError').innerText = "❌ የተሳሳተ የይለፍ ቃል (1234)";
       }
     }
-    function doLogout() { document.getElementById('loginOverlay').style.display = 'flex'; }
+
+    function doLogout() { 
+      document.getElementById('loginOverlay').style.display = 'flex'; 
+    }
+
     function switchTab(t, e) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(t).classList.add('active'); e.target.classList.add('active');
+      document.getElementById(t).classList.add('active'); 
+      if(e && e.target) e.target.classList.add('active');
     }
 
-    // Voice Command AI feature
     function startVoiceRecognition() {
       const txt = document.getElementById('voiceResultText');
       if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -254,7 +261,7 @@
           switchTab('stock', { target: document.querySelectorAll('.tab-btn')[7] });
         }
       };
-      recognition.onerror = function() { txt.innerText = "❌ የድምጽ ስህተት አጋጥሟል። በድጋሚ ይሞክሩ።"; };
+      recognition.onerror = function() { txt.innerText = "❌ የድምጽ ስህተት አጋጥሟል።"; };
       recognition.start();
     }
 
