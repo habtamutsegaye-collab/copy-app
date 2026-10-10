@@ -1,16 +1,15 @@
 {
-  "short_name": "ኮፒ ሂሳብ",
-  "name": "የኮፒ ቤት እና ስቴሽነሪ መቆጣጠሪያ PWA",
+  "name": "የሶሻል ኮሚቴ ኮፒ ቤት",
+  "short_name": "ኮፒ ቤት",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f3f4f6",
+  "theme_color": "#2563eb",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3144/3144456.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "https://cdn-icons-png.flaticon.com/512/2910/2910791.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
-  ],
-  "start_url": "./index.html",
-  "background_color": "#ffffff",
-  "theme_color": "#2563eb",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
