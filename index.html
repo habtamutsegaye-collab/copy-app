@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="am">
 <head>
-<link rel="manifest" href="manifest.json">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>የሶሻል ኮሚቴ Enterprise AI ኮፒ ቤት Ecosystem</title>
+  <title>የሶሻል ኮሚቴ Enterprise AI ኮፒ ቤት</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
   <style>
     :root {
       --bg-color: #f3f4f6; --card-bg: #ffffff; --text-color: #1f2937;
@@ -198,15 +199,13 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCXLIUWgplL73gXmQSBcW5CA86aNU4QOSkp2oSLWRPRV9HQ1d9_Sz4AdfYTK5qdon0/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => { console.log('Service Worker registered!', reg); })
-        .catch((err) => { console.log('Service Worker failed', err); });
-    });
-  }
-</script>
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+      });
+    }
 
     function doLogin() {
       if(document.getElementById('loginPass').value.trim() === "1234") {
