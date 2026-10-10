@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>የሶሻል ኮሚቴ AI ኮፒ ቤት - ሙሉ ቨርዥን (30 AI Features)</title>
+  <title>የሶሻል ኮሚቴ AI ኮፒ ቤት - ሙሉ ቨርዥን (100+ Features)</title>
   <style>
     :root {
       --bg-color: #f3f4f6; --card-bg: #ffffff; --text-color: #1f2937;
@@ -47,7 +47,7 @@
           <option value="treasurer">ገንዘብ ያዥ (Treasurer)</option>
           <option value="chairperson">ዋና ሰብሳቢ (Chairperson)</option>
         </select>
-        <input type="password" id="loginPass" placeholder="የይለፍ ቃል (0000)">
+        <input type="password" id="loginPass" placeholder="የይለፍ ቃል (1234)">
         <button type="button" class="submit-btn" onclick="doLogin()">ግባ</button>
       </div>
       <p id="loginError" style="color: var(--danger-color); margin-top: 15px; font-weight: bold;"></p>
@@ -68,15 +68,15 @@
   <div class="dashboard-grid">
     <div class="card"><h3>የዛሬ ገቢ</h3><p id="todayRevenue">0 ብር</p></div>
     <div class="card"><h3>የወሩ ትርፍ</h3><p id="monthlyProfit" style="color:#8b5cf6;">0 ብር</p></div>
-    <div class="card"><h3>የሰራተኛ ቦነስ</h3><p id="staffBonus" style="color:#10b981;">0 ብር</p></div>
+    <div class="card"><h3>የሶሻል ፈንድ</h3><p id="welfareBalance" style="color:#10b981;">0 ብር</p></div>
     <div class="card"><h3>ያልተከፈለ ዱቤ</h3><p id="totalCredit" style="color:#f59e0b;">0 ብር</p></div>
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ</button>
+    <button class="tab-btn active" onclick="switchTab('sales', event)">🛒 ሽያጭ እና ወጪ</button>
     <button class="tab-btn" onclick="switchTab('committee', event)">🏛️ ኮሚቴ ማዕከል</button>
     <button class="tab-btn" onclick="switchTab('preorder', event)">📚 ቅድመ-ትዕዛዝ</button>
-    <button class="tab-btn" onclick="switchTab('hr', event)">⏱️ ሰዓት</button>
+    <button class="tab-btn" onclick="switchTab('hr', event)">⏱️ ሰዓት እና ፈረቃ</button>
     <button class="tab-btn" onclick="switchTab('audit', event)">🕵️ ኦዲት</button>
     <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ</button>
     <button class="tab-btn" onclick="switchTab('stock', event)">📦 ስቶክ</button>
@@ -84,46 +84,65 @@
 
   <!-- 1. ሽያጭ -->
   <div id="sales" class="tab-content active">
-    <h3>አዲስ ሂሳብ መመዝገቢያ</h3>
+    <h3>አዲስ ሂሳብ እና ወጪ መመዝገቢያ</h3>
     <div class="form-group">
-      <select id="salesType">
+      <select id="salesType" onchange="toggleExpenseCategory(this.value)">
         <option value="copy">ኮፒ (Copy)</option>
         <option value="print">ፕሪንት (Print)</option>
-        <option value="stationery">ስቴሽነሪ</option>
+        <option value="stationery">ስቴሽነሪ እቃዎች</option>
         <option value="expense">🔻 የቢሮ ወጪ</option>
       </select>
+      <div id="expenseCategoryGroup" style="display:none;">
+        <select id="expenseCategory">
+          <option value="የወረቀት ግዢ">የወረቀት ግዢ</option>
+          <option value="የማሽን ጥገና">የማሽን ጥገና</option>
+          <option value="የኤሌክትሪክ/ኢንተርኔት">የኤሌክትሪክ/ኢንተርኔት ቢል</option>
+          <option value="ሌላ ወጪ">ሌላ ወጪ</option>
+        </select>
+      </div>
       <input type="text" id="salesDesc" placeholder="ዝርዝር ማብራሪያ">
       <input type="number" id="salesAmount" placeholder="ጠቅላላ መጠን (ብር)">
-      <input type="number" id="salesCost" placeholder="መግዣ ዋጋ">
+      <input type="number" id="salesCost" placeholder="መግዣ ዋጋ (Cost)">
+      <input type="number" id="salesDiscount" placeholder="ቅናሽ (Discount ከሆነ)">
       <select id="paymentMethod">
         <option value="Cash">በካሽ</option>
         <option value="Telebirr">ቴሌብር</option>
-        <option value="CBE">ባንክ</option>
+        <option value="CBE">ባንክ (CBE)</option>
       </select>
       <button type="button" class="submit-btn" onclick="submitSales()">መዝግብ</button>
     </div>
     <div id="salesMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
 
-  <!-- 2. የሶሻል ኮሚቴ ማዕከል (ሪፖርት እና ድምጽ መስጫ) -->
+  <!-- 2. የሶሻል ኮሚቴ ማዕከል -->
   <div id="committee" class="tab-content">
-    <h3>🏛️ የሶሻል ኮሚቴ አስተዳደር እና ሪፖርት ማዕከል</h3>
+    <h3>🏛️ የሶሻል ኮሚቴ እና የፈንድ ማዕከል</h3>
     <div class="ai-box">
-      <strong>🤖 AI ሪፖርት አዘጋጅ፡</strong> የኮሚቴ አባላት (ሰብሳቢ፣ ጸሐፊ፣ ገንዘብ ያዥ፣ ኦዲተር) የወሩን አጠቃላይ ሪፖርት በ 1 ክሊክ ወደ ቴሌግራም ግሩፕ መላክ ይችላሉ።
+      <strong>🤖 AI ረዳት:</strong> ወርሃዊ ሪፖርቶችን በአንድ ክሊክ ወደ ቴሌግራም መላክ እና የፈንድ ቀሪ ሂሳብ መቆጣጠር ይቻላል።
     </div>
     <div class="form-group">
       <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="sendMonthlyReportAI()">📊 ወርሃዊ ሪፖርት ለቴሌግራም ግሩፕ ላክ</button>
       
       <hr style="margin:15px 0; border-color:var(--border-color);">
-      <h4>🗳️ የኮሚቴ የውሳኔ ሃሳብ ድምጽ መስጫ</h4>
-      <p style="font-size:0.9rem;">ለሚቀጥለው የኮፒ ቤት ዕድገት ምን ይሻሻል?</p>
+      <h4>💰 የሶሻል ፈንድ / መዋጮ መመዝገቢያ</h4>
+      <input type="text" id="welfareMember" placeholder="የአባል ስም">
+      <select id="welfareType">
+        <option value="contribution">ወርሃዊ መዋጮ ገቢ</option>
+        <option value="expense">የዕርዳታ ወጪ (ሐዘን/ሰርግ)</option>
+      </select>
+      <input type="number" id="welfareAmount" placeholder="መጠን (ብር)">
+      <input type="text" id="welfareReason" placeholder="ምክንያት / ማብራሪያ">
+      <button type="button" class="submit-btn" style="background:#10b981;" onclick="submitWelfare()">ፈንድ መዝግብ</button>
+
+      <hr style="margin:15px 0; border-color:var(--border-color);">
+      <h4>🗳️ የኮሚቴ ድምጽ መስጫ (Poll)</h4>
       <select id="pollOption">
         <option value="አዲስ ማሽን መግዛት">አዲስ ማሽን መግዛት</option>
         <option value="ለሶሻል ፈንድ ተጨማሪ በጀት ማድረግ">ለሶሻል ፈንድ ተጨማሪ በጀት ማድረግ</option>
         <option value="የሰራተኛ ማበረታቻ ቦነስ መጨመር">የሰራተኛ ማበረታቻ ቦነስ መጨመር</option>
       </select>
-      <input type="text" id="memberName" placeholder="የኮሚቴ አባል ስምዎ">
-      <button type="button" class="submit-btn" style="background:var(--accent-color);" onclick="submitPollVote()">ድምጽ ስጥ (Vote)</button>
+      <input type="text" id="memberName" placeholder="የእርስዎ ስም">
+      <button type="button" class="submit-btn" onclick="submitPollVote()">ድምጽ ስጥ</button>
     </div>
     <div id="committeeMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
@@ -133,21 +152,33 @@
     <h3>📚 የመምህራን ቅድመ-ትዕዛዝ</h3>
     <div class="form-group">
       <input type="text" id="teacherName" placeholder="የመምህር ስም">
-      <input type="text" id="subjectName" placeholder="የትምህርት ርዕስ">
+      <input type="text" id="subjectName" placeholder="የትምህርት ርዕስ / የፈተና ዓይነት">
       <input type="number" id="pageCount" placeholder="የገጽ ብዛት">
       <input type="number" id="copyCount" placeholder="የኮፒ ብዛት">
+      <select id="bindingType">
+        <option value="Normal">ተራ (ስፌት)</option>
+        <option value="Spiral">ስፒራንት (Spiral)</option>
+      </select>
       <button type="button" class="submit-btn" onclick="submitPreOrder()">ትዕዛዝ መዝግብ</button>
     </div>
     <hr style="margin:20px 0; border-color:var(--border-color);">
     <div id="preOrderList"></div>
   </div>
 
-  <!-- 4. ሰራተኛ ሰዓት -->
+  <!-- 4. ሰራተኛ ሰዓት እና ፈረቃ -->
   <div id="hr" class="tab-content">
-    <h3>⏱️ ሰራተኛ ሰዓት መቆጣጠሪያ</h3>
+    <h3>⏱️ ሰዓት መቆጣጠሪያ እና ፈረቃ ማስረከቢያ</h3>
     <div style="display:flex; gap:10px; margin-bottom:15px;">
       <button onclick="clockInOut('Clock In')" style="background:var(--accent-color); color:white; border:none; flex:1; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">🟢 ስራ ጀምሬአለሁ</button>
       <button onclick="clockInOut('Clock Out')" style="background:var(--danger-color); color:white; border:none; flex:1; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">🔴 ስራ ጨርሻለሁ</button>
+    </div>
+    <hr style="margin:15px 0; border-color:var(--border-color);">
+    <h4>🔄 የገንዘብ ማስረከቢያ (Shift Handover)</h4>
+    <div class="form-group">
+      <input type="text" id="treasurerName" placeholder="ገንዘብ ተቀባይ (Treasurer) ስም">
+      <input type="number" id="handoverCash" placeholder="የተረከበው የካሽ መጠን">
+      <textarea id="handoverNotes" placeholder="ማስታወሻ (ካለ)"></textarea>
+      <button type="button" class="submit-btn" onclick="submitHandover()">ገንዘብ አስረክብ</button>
     </div>
     <div id="hrMsg" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
   </div>
@@ -174,9 +205,9 @@
   <div id="stock" class="tab-content">
     <h3>የእቃ ስቶክ መቆጣጠሪያ</h3>
     <div class="form-group">
-      <input type="text" id="itemName" placeholder="የእቃ ስም">
+      <input type="text" id="itemName" placeholder="የእቃ ስም (ለምሳሌ፡ A4 ወረቀት)">
       <input type="number" id="itemQty" placeholder="ብዛት">
-      <input type="number" id="itemSellPrice" placeholder="მሸጫ ዋጋ">
+      <input type="number" id="itemSellPrice" placeholder="መሸጫ ዋጋ">
       <button type="button" class="submit-btn" onclick="submitStock()">እቃ መዝግብ</button>
     </div>
     <hr style="margin:20px 0; border-color:var(--border-color);">
@@ -184,7 +215,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAdQBlQT65WN7h-epxK1JjVl3bI-EEjGCw1MJ7l_K3FCFI-bHMmD-Fa_xk0wwqLnXt/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoD8Ejm6eH0VOWlNUgKixisJE35fWYOvNQS_29p9C1FhhljjVnFK8mxYHJkMJjtUFf/exec"; // ⚠️ እዚህ ላይ የራስዎን ሊንክ ያስገቡ
     let currentUser = { role: "staff", name: "ሰራተኛ" };
     let globalCache = {};
 
@@ -205,14 +236,17 @@
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(t).classList.add('active'); e.target.classList.add('active');
     }
+    function toggleExpenseCategory(val) {
+      document.getElementById('expenseCategoryGroup').style.display = (val === 'expense') ? 'block' : 'none';
+    }
 
     function fetchDashboard() {
-      if(!SCRIPT_URL || SCRIPT_URL.includes("እዚህ_ላይ")) return;
+      if(!SCRIPT_URL || SCRIPT_URL.includes("YOUR_GOOGLE")) return;
       fetch(SCRIPT_URL).then(res => res.json()).then(data => {
         globalCache = data;
         document.getElementById('todayRevenue').innerText = (data.todayRevenue || 0) + " ብር";
         document.getElementById('monthlyProfit').innerText = (data.monthlyProfit || 0) + " ብር";
-        document.getElementById('staffBonus').innerText = (data.staffBonusEstimate || 0) + " ብር";
+        document.getElementById('welfareBalance').innerText = (data.welfareBalance || 0) + " ብር";
         document.getElementById('totalCredit').innerText = (data.totalCredit || 0) + " ብር";
         renderCredits(data.creditsList || []);
         renderStocks(data.stocksList || []);
@@ -222,17 +256,24 @@
     }
 
     function sendMonthlyReportAI() {
-      const txt = `ጠቅላላ ወርሃዊ ገቢ: ${globalCache.monthlyRevenue || 0} ብር\nየተጣራ ትርፍ: ${globalCache.monthlyProfit || 0} ብር\nያልተከፈለ ዱቤ: ${globalCache.totalCredit || 0} ብር`;
+      const txt = `ጠቅላላ ወርሃዊ ገቢ: ${globalCache.monthlyRevenue || 0} ብር\nየተጣራ ትርፍ: ${globalCache.monthlyProfit || 0} ብር\nየሶሻል ፈንድ ቀሪ: ${globalCache.welfareBalance || 0} ብር\nያልተከፈለ ዱቤ: ${globalCache.totalCredit || 0} ብር`;
       sendData({ action: "sendMonthlyReport", summaryText: txt, staff: currentUser.name }, document.getElementById('committeeMsg'));
+    }
+
+    function submitWelfare() {
+      sendData({
+        action: "addWelfare",
+        memberName: document.getElementById('welfareMember').value,
+        type: document.getElementById('welfareType').value,
+        amount: document.getElementById('welfareAmount').value,
+        reason: document.getElementById('welfareReason').value
+      }, document.getElementById('committeeMsg'), () => { alert("✅ የፈንድ መረጃ ተመዝግቧል!"); });
     }
 
     function submitPollVote() {
       const m = document.getElementById('memberName').value;
-      if(!m) { alert("እባክዎን ስምዎን ያስገቡ!"); return; }
-      sendData({ action: "addPollVote", member: m, voteOption: document.getElementById('pollOption').value }, document.getElementById('committeeMsg'), () => {
-        alert("✅ ድምጽዎ ተመዝግቧል!");
-        document.getElementById('memberName').value = "";
-      });
+      if(!m) { alert("ስምዎን ያስገቡ!"); return; }
+      sendData({ action: "addPollVote", member: m, voteOption: document.getElementById('pollOption').value }, document.getElementById('committeeMsg'), () => { alert("✅ ድምጽዎ ተመዝግቧል!"); });
     }
 
     function submitPreOrder() {
@@ -241,7 +282,8 @@
         teacherName: document.getElementById('teacherName').value,
         subject: document.getElementById('subjectName').value,
         pages: document.getElementById('pageCount').value,
-        copies: document.getElementById('copyCount').value
+        copies: document.getElementById('copyCount').value,
+        binding: document.getElementById('bindingType').value
       }, null, fetchDashboard);
     }
 
@@ -249,13 +291,25 @@
       sendData({ action: "clockInOut", staff: currentUser.name, type: type }, document.getElementById('hrMsg'));
     }
 
+    function submitHandover() {
+      sendData({
+        action: "shiftHandover",
+        fromStaff: currentUser.name,
+        toTreasurer: document.getElementById('treasurerName').value,
+        cashAmount: document.getElementById('handoverCash').value,
+        notes: document.getElementById('handoverNotes').value
+      }, document.getElementById('hrMsg'));
+    }
+
     function submitSales() {
       sendData({
         action: "addSales",
         type: document.getElementById('salesType').value,
+        expenseCategory: document.getElementById('expenseCategory').value,
         desc: document.getElementById('salesDesc').value || "የለም",
         amount: document.getElementById('salesAmount').value,
         cost: document.getElementById('salesCost').value || 0,
+        discount: document.getElementById('salesDiscount').value || 0,
         paymentMethod: document.getElementById('paymentMethod').value,
         staff: currentUser.name
       }, document.getElementById('salesMsg'));
@@ -277,17 +331,14 @@
       const c = document.getElementById('preOrderList'); c.innerHTML = l.length === 0 ? "<p>ትዕዛዝ የለም</p>" : "";
       l.forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.teacher}</strong><br>${i.subject} (${i.copies} ኮፒ)</div><span>Pending</span></div>`; });
     }
-
     function renderCredits(l) {
       const c = document.getElementById('creditList'); c.innerHTML = l.length === 0 ? "<p>ዱቤ የለም</p>" : "";
       l.forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.customer}</strong><br>${i.amount} ብር</div><button onclick="payCredit('${i.customer}', ${i.amount})">ከፈለ</button></div>`; });
     }
-
     function renderStocks(l) {
       const c = document.getElementById('stockList'); c.innerHTML = l.length === 0 ? "<p>ስቶክ ባዶ ነው</p>" : "";
       l.forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.itemName}</strong></div><div>${i.itemQty} ብዛት</div></div>`; });
     }
-
     function renderAuditLogs(l) {
       const c = document.getElementById('auditLogList'); c.innerHTML = l.length === 0 ? "<p>መዝገብ የለም</p>" : "";
       l.reverse().forEach(i => { c.innerHTML += `<div class="list-item"><div><strong>${i.user}</strong> - ${i.action}<br><small>${i.details}</small></div><div>${i.time}</div></div>`; });
