@@ -38,7 +38,7 @@
 </head>
 <body>
 
-  <!-- Enterprise Login Overlay -->
+  <!-- 1. የመጀመሪያው ቦታ (የመግቢያ ስክሪን ርዕስ) -->
   <div id="loginOverlay">
     <div id="loginBox">
       <img src="./logo.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid var(--primary-color);">
@@ -57,6 +57,7 @@
     </div>
   </div>
 
+  <!-- 2. ሁለተኛው ቦታ (የዋናው ገጽ አናት ርዕስ) -->
   <header>
     <div style="display: flex; align-items: center; gap: 8px;">
       <img src="./logo.png" alt="Logo" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary-color);">
@@ -208,7 +209,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpIV24KqmziCalAeUSiOzC5lkztilWZYAxQ8P0SLyjM5jRNhiCr5pqXi4NDPHS9ZvB/exec";
+    const SCRIPT_URL = "እዚህ_ላይ_የእርስዎን_WEB_APP_URL_ያድርጉ";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
 
     if ('serviceWorker' in navigator) {
