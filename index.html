@@ -60,7 +60,7 @@
   <header>
     <div style="display: flex; align-items: center; gap: 8px;">
       <div>
-        <h1>akpss ኮፒ </h1>
+        <h1>ኢ.ክ.መሰናዶ ኮፒ ማዕከል</h1>
         <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
       </div>
     </div>
@@ -88,9 +88,18 @@
     <button class="tab-btn" onclick="switchTab('stock', event)">📦 ስቶክ PO</button>
   </div>
 
-  <!-- Tab 1: Sales -->
+  <!-- Tab 1: Sales & Voice Sales Entry -->
   <div id="sales" class="tab-content active">
     <h3>አዲስ ሽያጭ መመዝገቢያ</h3>
+    
+    <!-- Voice Sales Shortcut Box -->
+    <div class="ai-box" style="text-align: center;">
+      <strong>🎙️ የድምጽ ሽያጭ መዝጋቢ:</strong> አዝራሩን በመጫን መጠኑን እና አይነቱን ይናገሩ (ምሳሌ፦ *"ሶስት መቶ ብር ፕሪንት በካሽ ተሸጠ"*)።
+      <br><br>
+      <button type="button" class="submit-btn" style="background:#8b5cf6; padding: 10px 15px;" onclick="startVoiceSalesEntry()">🎤 በድምጽ ሽያጭ መዝግብ</button>
+      <p id="voiceSalesStatus" style="margin-top: 6px; font-style: italic; font-size: 0.8rem;"></p>
+    </div>
+
     <div class="form-group">
       <select id="salesType">
         <option value="copy">ኮፒ (Copy)</option>
@@ -114,12 +123,12 @@
 
   <!-- Tab 2: Voice Command Assistant -->
   <div id="voiceNav" class="tab-content">
-    <h3>🎙️ AI የድምጽ ትዕዛዝ ረዳት (Voice Command)</h3>
+    <h3>🎙️ AI የድምጽ ትዕዛዝ ረዳት (Voice Navigation)</h3>
     <div class="ai-box">
-      <strong>🤖 ድምጽ ማስተዋወቂያ፡</strong> ማይክሮፎኑን በመጫን ትዕዛዝዎን ይናገሩ (ለምሳሌ፦ *"ሽያጭ"*፣ *"ዱቤ"* ወይም *"ስቶክ"*)።
+      <strong>🤖 መመሪያ፡</strong> ማይክሮፎኑን በመጫን ወደ ሚፈልጉት ገጽ መሄድ ይችላሉ (ለምሳሌ፦ *"ሽያጭ"*፣ *"ዱቤ"* ወይም *"ስቶክ"*)።
     </div>
     <div class="form-group">
-      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="startVoiceRecognition()">🎤 ማይክሮፎን ክፈት እና ተናገር</button>
+      <button type="button" class="submit-btn" style="background:#8b5cf6;" onclick="startVoiceRecognition()">🎤 ማይክሮፎን ክፈት እና ትዕዛዝ ተናገር</button>
       <p id="voiceResultText" style="font-style: italic; margin-top: 10px; text-align: center;"></p>
     </div>
   </div>
@@ -149,27 +158,25 @@
       <textarea id="overrideReason" rows="2" placeholder="የውሳኔው ምክንያት..."></textarea>
       <button type="button" class="submit-btn" style="background:var(--danger-color);" onclick="submitChairpersonOverride()">ልዩ ውሳኔ አጽድቅ (Override)</button>
     </div>
+    <hr style="margin:15px 0; border-color:var(--border-color);">
+    <button type="button" class="submit-btn" style="background:var(--primary-color);" onclick="triggerOwnerDigest()">📊 የዕለቱን ሪፖርት አሁን ወደ ቴሌግራም ላክ</button>
   </div>
 
   <!-- Tab 5: Machine Acoustic & AI Health Monitor -->
   <div id="machineHealth" class="tab-content">
     <h3>🖨️ AI የማሽን ብልሽት መለያ (AI Printer Repair Diagnostics)</h3>
     <div class="ai-box">
-      <strong>🤖 የ AI ጥገና ረዳት፡</strong> ማሽኑ ላይ የወጣውን የብልሽት ቁጥር (Error Code) ወይም ምልክቱን ያስገቡ፤ AI የቱ ጋር እንዳለ እና እንዴት እንደሚጠገን ወዲያውኑ ይነግርዎታል።
+      <strong>🤖 የ AI ጥገና ረዳት፡</strong> ማሽኑ ላይ የወጣውን የብልሽት ቁጥር (Error Code) ወይም ምልክቱን ያስገቡ፤ AI መፍትሄውን ወዲያውኑ ይነግርዎታል።
     </div>
     <div class="form-group">
-      <label>የማሽኑ ሞዴል (ምሳሌ፡ Canon / HP / Xerox):</label>
+      <label>የማሽኑ ሞዴል (ምሳሌ፡ Canon / HP):</label>
       <input type="text" id="printerModelInput" placeholder="የማሽን ስም/ሞዴል">
-
-      <label>የብልሽት ቁጥር (Error Code) ወይም ምልክት:</label>
-      <input type="text" id="errorCodeInput" placeholder="ምሳሌ፡ E000, Paper Jam, 07">
-
+      <label>የብልሽት ቁጥር (Error Code):</label>
+      <input type="text" id="errorCodeInput" placeholder="ምሳሌ፡ E000, Paper Jam">
       <label>ተጨማሪ ማብራሪያ (ካለ):</label>
-      <textarea id="errorDescInput" rows="2" placeholder="ለምሳሌ፡ ከኋላ በኩል ድምጽ እያሰማ ቆመ..."></textarea>
-
+      <textarea id="errorDescInput" rows="2" placeholder="ዝርዝር ሁኔታ..."></textarea>
       <button type="button" class="submit-btn" style="background:var(--primary-color);" onclick="runAiPrinterDiagnosis()">🔍 AI ብልሽት ፈትሽ እና መፍትሄ አግኝ</button>
     </div>
-
     <div id="aiDiagnosisResult" style="margin-top: 15px; display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-color); padding: 12px; border-radius: 6px;">
       <h4 style="margin:0 0 5px 0; color: var(--accent-color);">🛠️ የ AI የጥገና ትንተና ውጤት፡</h4>
       <p id="diagnosisText" style="margin: 0; font-size: 0.9rem;"></p>
@@ -216,7 +223,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwA9DXBE2kOKsCj_stFU9qKB7JRd2Axt6C1GJfungW91337aSDk-i9fKfToUFpNHtTx/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoeYraUjW-zu0bcSvgtfIErHiVECN5qW0I_zDcxzRqVUNx6VaZrqwe3sXMNpmJIFeH/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
 
     if ('serviceWorker' in navigator) {
@@ -237,15 +244,48 @@
       }
     }
 
-    function doLogout() { 
-      document.getElementById('loginOverlay').style.display = 'flex'; 
-    }
-
+    function doLogout() { document.getElementById('loginOverlay').style.display = 'flex'; }
     function switchTab(t, e) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(t).classList.add('active'); 
       if(e && e.target) e.target.classList.add('active');
+    }
+
+    // 🎙️ የድምጽ ሽያጭ መዝጋቢ ተግባር (Voice Sales Entry)
+    function startVoiceSalesEntry() {
+      const statusTxt = document.getElementById('voiceSalesStatus');
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        statusTxt.innerText = "❌ ብራውዘርዎ የድምጽ ትዕዛዝ አይደግፍም።";
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'am-ET';
+      statusTxt.innerText = "🎙️ እያዳመጥኩ ነው... (ምሳሌ፦ 500 ብር ፕሪንት)";
+      
+      recognition.onresult = function(event) {
+        const speech = event.results[0][0].transcript;
+        statusTxt.innerText = "🗣️ የተባለው: \"" + speech + "\"";
+        
+        // ከንግግሩ ውስጥ አሃዝ (Numbers) ለመፈለግ
+        const numbers = speech.match(/\d+/g);
+        const amount = numbers ? numbers[0] : "100";
+        
+        let type = "copy";
+        if(speech.includes("ፕሪንት") || speech.includes("print")) type = "print";
+        else if(speech.includes("ስቴሽነሪ")) type = "stationery";
+        else if(speech.includes("ላሚኔት")) type = "laminate";
+        
+        document.getElementById('salesType').value = type;
+        document.getElementById('salesAmount').value = amount;
+        document.getElementById('salesDesc').value = "በድምጽ የተመዘገበ: " + speech;
+        
+        // በአውቶማቲክ መዝግብ
+        submitSales();
+      };
+      recognition.onerror = function() { statusTxt.innerText = "❌ የድምጽ ስህተት አጋጥሟል።"; };
+      recognition.start();
     }
 
     function startVoiceRecognition() {
@@ -269,7 +309,6 @@
           switchTab('stock', { target: document.querySelectorAll('.tab-btn')[7] });
         }
       };
-      recognition.onerror = function() { txt.innerText = "❌ የድምጽ ስህተት አጋጥሟል።"; };
       recognition.start();
     }
 
@@ -290,7 +329,7 @@
       sendData({
         action: "addSales",
         type: document.getElementById('salesType').value,
-        desc: document.getElementById('salesDesc').value || "50-Feature Sales",
+        desc: document.getElementById('salesDesc').value || "Enterprise Sales",
         amount: document.getElementById('salesAmount').value,
         cost: document.getElementById('salesCost').value || 0,
         paymentMethod: document.getElementById('paymentMethod').value,
@@ -298,53 +337,34 @@
       }, document.getElementById('salesMsg'));
     }
 
+    function triggerOwnerDigest() {
+      sendData({ action: "sendDailyOwnerDigest" }, null, () => { alert("✅ የዕለቱ ሪፖርት ወደ ቴሌግራምዎ ተልኳል!"); });
+    }
+
     function runAiPrinterDiagnosis() {
-      const model = document.getElementById('printerModelInput').value || "አጠቃላይ ማሽን";
+      const model = document.getElementById('printerModelInput').value || "ማሽን";
       const code = document.getElementById('errorCodeInput').value;
       const desc = document.getElementById('errorDescInput').value;
       const resBox = document.getElementById('aiDiagnosisResult');
       const resText = document.getElementById('diagnosisText');
 
-      if (!code) {
-        alert("እባክዎ የብልሽት ቁጥር (Error Code) ያስገቡ!");
-        return;
-      }
-
+      if (!code) { alert("እባክዎ የብልሽት ቁጥር (Error Code) ያስገቡ!"); return; }
       resBox.style.display = "block";
-      resText.innerText = "⏳ AI ማሽኑን በመመርመር ላይ ነው... እባክዎ ይጠብቁ...";
+      resText.innerText = "⏳ AI ማሽኑን በመመርመር ላይ ነው...";
 
       fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({
-          action: "aiMachineDiagnosis",
-          printerModel: model,
-          errorCode: code,
-          description: desc,
-          staff: currentUser.name
-        })
+        method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ action: "aiMachineDiagnosis", printerModel: model, errorCode: code, description: desc, staff: currentUser.name })
       }).then(() => {
-        let localSolution = "የተሰጠው ኮድ (" + code + "): ማሽኑን ጠፍቶ ማብራት ወይም የቃጠሎ/የወረቀት ዱካዎችን ማጽዳት ይመከራል።";
-        if (code.toUpperCase().includes("E000") || code.toUpperCase().includes("F2")) {
-          localSolution = "⚠️ ከፍተኛ የሙቀት መጠን/የፊውሰር (Fuser) ችግር! ማሽኑን ወዲያውኑ ዘግተው ባለሙያ ይጠሩ።";
-        } else if (code.toUpperCase().includes("JAM")) {
-          localSolution = "📄 ወረቀት ተጨናንቋል: የፊት ሽፋኑን ከፍተው የተጣበቀውን ወረቀት በቀስታ ያውጡ፤ ሮለሮቹን ያጽዱ።";
-        }
-        
+        let localSolution = "የተሰጠው ኮድ (" + code + "): ማሽኑን ጠፍቶ ማብራት ይመከራል።";
+        if (code.toUpperCase().includes("E000")) localSolution = "⚠️ የሙቀት መጠን/ፊውሰር (Fuser) ችግር! ባለሙያ ይጠሩ።";
+        else if (code.toUpperCase().includes("JAM")) localSolution = "📄 ወረቀት ተጨናንቋል: የፊት ሽፋኑን ከፍተው ያጽዱ።";
         resText.innerHTML = "<b>ማሽን:</b> " + model + "<br><b>መፍትሄ:</b> " + localSolution;
-      }).catch(err => {
-        resText.innerText = "❌ ስህተት አጋጥሟል: " + err;
       });
     }
 
     function submitAuditorNote() {
-      sendData({
-        action: "addAuditorNote",
-        auditorName: currentUser.name,
-        note: document.getElementById('auditorNoteText').value,
-        riskLevel: document.getElementById('auditorRiskLevel').value
-      }, null, () => {
+      sendData({ action: "addAuditorNote", auditorName: currentUser.name, note: document.getElementById('auditorNoteText').value, riskLevel: document.getElementById('auditorRiskLevel').value }, null, () => {
         alert("✅ ኦዲት ማስታወሻ ተመዝግቧል!");
         document.getElementById('auditorNoteText').value = "";
         fetchDashboard();
@@ -352,12 +372,7 @@
     }
 
     function submitChairpersonOverride() {
-      sendData({
-        action: "chairpersonOverride",
-        chairperson: currentUser.name,
-        overrideAction: document.getElementById('overrideAction').value,
-        reason: document.getElementById('overrideReason').value
-      }, null, () => {
+      sendData({ action: "chairpersonOverride", chairperson: currentUser.name, overrideAction: document.getElementById('overrideAction').value, reason: document.getElementById('overrideReason').value }, null, () => {
         alert("✅ የሰብሳቢ ውሳኔ ተመዝግቧል!");
         document.getElementById('overrideAction').value = "";
         document.getElementById('overrideReason').value = "";
