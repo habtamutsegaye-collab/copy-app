@@ -38,10 +38,9 @@
 </head>
 <body>
 
-  <!-- 1. የመጀመሪያው ቦታ (የመግቢያ ስክሪን ርዕስ) -->
+  <!-- Login Overlay -->
   <div id="loginOverlay">
     <div id="loginBox">
-      <img src="./logo.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid var(--primary-color);">
       <h2 style="margin-top:0; font-size: 1.1rem;">ኢ.ክ.መሰናዶ ኮፒ ቤት</h2>
       <div class="form-group">
         <select id="loginRoleSelect">
@@ -57,10 +56,9 @@
     </div>
   </div>
 
-  <!-- 2. ሁለተኛው ቦታ (የዋናው ገጽ አናት ርዕስ) -->
+  <!-- Header -->
   <header>
     <div style="display: flex; align-items: center; gap: 8px;">
-      <img src="./logo.png" alt="Logo" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary-color);">
       <div>
         <h1>ኢ.ክ.መሰናዶ ኮፒ ማዕከል</h1>
         <small id="userRoleBadge" style="color: var(--primary-color); font-weight: bold;"></small>
@@ -84,7 +82,7 @@
     <button class="tab-btn" onclick="switchTab('voiceNav', event)">🎙️ ድምጽ ረዳት</button>
     <button class="tab-btn" onclick="switchTab('auditorHub', event)">🕵️ የኦዲተር ፓነል</button>
     <button class="tab-btn" onclick="switchTab('chairpersonHub', event)">⚡ የሰብሳቢ ፓነል</button>
-    <button class="tab-btn" onclick="switchTab('machineHealth', event)">🖨️ የማሽን ጤንነት</button>
+    <button class="tab-btn" onclick="switchTab('machineHealth', event)">🖨️ AI ማሽን ጥገና</button>
     <button class="tab-btn" onclick="switchTab('hrBio', event)">⏱️ ባዮሜትሪክ ሰዓት</button>
     <button class="tab-btn" onclick="switchTab('credit', event)">📝 ዱቤ Risk</button>
     <button class="tab-btn" onclick="switchTab('stock', event)">📦 ስቶክ PO</button>
@@ -153,19 +151,28 @@
     </div>
   </div>
 
-  <!-- Tab 5: Machine Acoustic & Health Monitor -->
+  <!-- Tab 5: Machine Acoustic & AI Health Monitor -->
   <div id="machineHealth" class="tab-content">
-    <h3>🖨️ የማሽን ጤንነት እና የድምጽ ጥገና (Acoustic & Health)</h3>
+    <h3>🖨️ AI የማሽን ብልሽት መለያ (AI Printer Repair Diagnostics)</h3>
+    <div class="ai-box">
+      <strong>🤖 የ AI ጥገና ረዳት፡</strong> ማሽኑ ላይ የወጣውን የብልሽት ቁጥር (Error Code) ወይም ምልክቱን ያስገቡ፤ AI የቱ ጋር እንዳለ እና እንዴት እንደሚጠገን ወዲያውኑ ይነግርዎታል።
+    </div>
     <div class="form-group">
-      <label>የማሽኑ ሁኔታ፡</label>
-      <select id="machineStatusSelect">
-        <option value="Good">በጥሩ ሁኔታ ላይ ይሰራል</option>
-        <option value="Noisy">ያልተለመደ ድምጽ አለው (Acoustic Jam Alert)</option>
-        <option value="Needs Service">ጥገና ያስፈልገዋል</option>
-      </select>
-      <label>የቶነር መጠን (%):</label>
-      <input type="number" id="tonerLevelInput" placeholder="የቀለም መጠን (ምሳሌ፡ 20)" min="0" max="100">
-      <button type="button" class="submit-btn" onclick="submitMachineHealth()">የማሽን ሁኔታ መዝግብ</button>
+      <label>የማሽኑ ሞዴል (ምሳሌ፡ Canon / HP / Xerox):</label>
+      <input type="text" id="printerModelInput" placeholder="የማሽን ስም/ሞዴል">
+
+      <label>የብልሽት ቁጥር (Error Code) ወይም ምልክት:</label>
+      <input type="text" id="errorCodeInput" placeholder="ምሳሌ፡ E000, Paper Jam, 07">
+
+      <label>ተጨማሪ ማብራሪያ (ካለ):</label>
+      <textarea id="errorDescInput" rows="2" placeholder="ለምሳሌ፡ ከኋላ በኩል ድምጽ እያሰማ ቆመ..."></textarea>
+
+      <button type="button" class="submit-btn" style="background:var(--primary-color);" onclick="runAiPrinterDiagnosis()">🔍 AI ብልሽት ፈትሽ እና መፍትሄ አግኝ</button>
+    </div>
+
+    <div id="aiDiagnosisResult" style="margin-top: 15px; display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-color); padding: 12px; border-radius: 6px;">
+      <h4 style="margin:0 0 5px 0; color: var(--accent-color);">🛠️ የ AI የጥገና ትንተና ውጤት፡</h4>
+      <p id="diagnosisText" style="margin: 0; font-size: 0.9rem;"></p>
     </div>
   </div>
 
@@ -209,7 +216,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpIV24KqmziCalAeUSiOzC5lkztilWZYAxQ8P0SLyjM5jRNhiCr5pqXi4NDPHS9ZvB/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwA9DXBE2kOKsCj_stFU9qKB7JRd2Axt6C1GJfungW91337aSDk-i9fKfToUFpNHtTx/exec";
     let currentUser = { role: "staff", name: "ሰራተኛ" };
 
     if ('serviceWorker' in navigator) {
@@ -291,6 +298,46 @@
       }, document.getElementById('salesMsg'));
     }
 
+    function runAiPrinterDiagnosis() {
+      const model = document.getElementById('printerModelInput').value || "አጠቃላይ ማሽን";
+      const code = document.getElementById('errorCodeInput').value;
+      const desc = document.getElementById('errorDescInput').value;
+      const resBox = document.getElementById('aiDiagnosisResult');
+      const resText = document.getElementById('diagnosisText');
+
+      if (!code) {
+        alert("እባክዎ የብልሽት ቁጥር (Error Code) ያስገቡ!");
+        return;
+      }
+
+      resBox.style.display = "block";
+      resText.innerText = "⏳ AI ማሽኑን በመመርመር ላይ ነው... እባክዎ ይጠብቁ...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          action: "aiMachineDiagnosis",
+          printerModel: model,
+          errorCode: code,
+          description: desc,
+          staff: currentUser.name
+        })
+      }).then(() => {
+        let localSolution = "የተሰጠው ኮድ (" + code + "): ማሽኑን ጠፍቶ ማብራት ወይም የቃጠሎ/የወረቀት ዱካዎችን ማጽዳት ይመከራል።";
+        if (code.toUpperCase().includes("E000") || code.toUpperCase().includes("F2")) {
+          localSolution = "⚠️ ከፍተኛ የሙቀት መጠን/የፊውሰር (Fuser) ችግር! ማሽኑን ወዲያውኑ ዘግተው ባለሙያ ይጠሩ።";
+        } else if (code.toUpperCase().includes("JAM")) {
+          localSolution = "📄 ወረቀት ተጨናንቋል: የፊት ሽፋኑን ከፍተው የተጣበቀውን ወረቀት በቀስታ ያውጡ፤ ሮለሮቹን ያጽዱ።";
+        }
+        
+        resText.innerHTML = "<b>ማሽን:</b> " + model + "<br><b>መፍትሄ:</b> " + localSolution;
+      }).catch(err => {
+        resText.innerText = "❌ ስህተት አጋጥሟል: " + err;
+      });
+    }
+
     function submitAuditorNote() {
       sendData({
         action: "addAuditorNote",
@@ -315,16 +362,6 @@
         document.getElementById('overrideAction').value = "";
         document.getElementById('overrideReason').value = "";
       });
-    }
-
-    function submitMachineHealth() {
-      sendData({
-        action: "addMachineHealthLog",
-        machineStatus: document.getElementById('machineStatusSelect').value,
-        soundNoiseLevel: "Normal",
-        tonerLevel: document.getElementById('tonerLevelInput').value || 100,
-        staff: currentUser.name
-      }, null, () => { alert("✅ የማሽን መረጃ ተመዝግቧል!"); });
     }
 
     function clockInOutBiometric(type) {
